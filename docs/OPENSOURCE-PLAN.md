@@ -114,7 +114,7 @@ Status per 2026-11-15 12:05 UTC; CI mengacu ke commit terakhir di `main`.
 | Item | nusapeta/route | nusapeta/place | Target |
 |---|---|---|---|
 | Kode terbaca, test ada | ✅ 104 test, golden | ✅ 47 test | pertahankan |
-| CI build + test | ✅ 2/2 hijau, 50 s (`261a452`, run `43712325404`) | ⏳ run `43711875214` di `263b53c`; `arm64` hanya jalan di `main` | hijau |
+| CI build + test | ✅ 2/2 hijau, 46 s (`81ec70b`, run `43714144943`) | ✅ 3/3 hijau, 29 m (`263b53c`, run `43711875214`; `arm64` 28 m 55 s di QEMU) | hijau |
 | Repo publik | ✅ publik 2026-11-15 | ✅ publik 2026-11-15 | publik |
 | Deskripsi / topik / homepage | ✅ terisi | ✅ terisi | terisi |
 | Tag / release | ✅ `v0.1.0` + `data-2026.11`, 12 aset | ⏳ `v0.1.0` di-push; release berjalan | `v0.1.0` |
@@ -445,10 +445,12 @@ komentar bahwa NFR-007 diukur di QEMU sehingga performa tidak diklaim;
 (b) `cargo deny check licenses` karena `docs/DEPENDENCIES.md` sudah menjanjikan
 audit lisensi tapi CI belum menegakkannya.
 
-Catatan hasil: build Rust `--release` di bawah QEMU butuh ~50 menit, jadi job
-`arm64` dibatasi ke `push` di `main` (`if: github.event_name != 'pull_request'`)
-plus cache layer `type=gha`. Workflow `release` tetap membangun `linux/arm64`,
-jadi regresi arm64 tertangkap sebelum tag tanpa membebani tiap PR.
+Catatan hasil: build Rust `--release` di bawah QEMU awalnya lewat 50 menit
+tanpa cache; setelah cache layer `type=gha` aktif, run pertama yang hijau
+(`43711875214`) selesai dalam 28 m 55 s. Job `arm64` dibatasi ke `push` di
+`main` (`if: github.event_name != 'pull_request'`). Workflow `release` tetap
+membangun `linux/arm64`, jadi regresi arm64 tertangkap sebelum tag tanpa
+membebani tiap PR.
 
 **P0.6 File komunitas.** `CODE_OF_CONDUCT.md`, issue template, PR template,
 `CHANGELOG.md` (0.1.0), `dependabot.yml` (`cargo` + actions + docker).
@@ -603,18 +605,28 @@ docker run --rm -p 127.0.0.1:8090:8090 -v "$PWD:/data:ro" \
 curl -fsS 'http://127.0.0.1:8090/search?q=monas&limit=1'
 ```
 
-- [ ] Unduh → `healthz` 200 di bawah 5 menit di mesin bersih
-- [ ] `sha256sum -c` lolos
-- [ ] `/version` melaporkan commit tag, bukan `dev`
-- [ ] `/healthz` membawa provenance PBF
-- [ ] Nusapeta Place: unduh index → `nusa-place --verify-checksum` → `/search?q=monas` 200
-- [ ] Image total < 40 MB (nusapeta/route) dan berjalan sebagai UID 65532, root read-only
-- [ ] Release body memuat atribusi ODbL dan tautan `LICENSE-DATA`
+- [ ] Unduh → `healthz` 200 di bawah 5 menit di mesin bersih (diukur
+      2026-11-15: unduh graph 552 MB saja 332 s, jadi gate ini tidak lolos di
+      tautan yang dipakai; angka bergantung bandwidth, bukan CPU)
+- [x] `sha256sum -c` lolos (route 4/4 dan place 4/4, anonim)
+- [x] `/version` melaporkan commit tag, bukan `dev` (`78ad0b4` dari
+      `nusa-serve` rilis; gateway baru ikut distempel setelah `0.1.0`)
+- [x] `/healthz` membawa provenance PBF (`nodes` 54.891.393, `edges`
+      112.340.071, `pbf_sha256`, `built_at`)
+- [x] Nusapeta Place: unduh index → `nusa-place --verify-checksum` →
+      `/search?q=monas` 200 (diuji di dalam image `0.1.0` dengan index rilis)
+- [x] Image total < 40 MB (nusapeta/route) dan berjalan sebagai UID 65532,
+      root read-only (36,7 MB; `docker run --read-only` tetap 200 di `/healthz`)
+- [x] Release body memuat atribusi ODbL dan tautan `LICENSE-DATA` (route;
+      place menyusul saat release-nya selesai)
 
-Status lokal 2026-11-15: `sha256sum -c` dan `zstd -t` lolos untuk graph
-nasional, graph Jawa, dan index place; `bootstrap.sh --java` + `e2e.sh` lulus
-9/9; image lokal route 36,7 MB dan place 147 MB, keduanya UID 65532. Butir di
-atas tetap terbuka karena belum ada URL rilis publik.
+Status 2026-11-15: `sha256sum -c` dan `zstd -t` lolos untuk graph nasional,
+graph Jawa, dan index place. URL rilis publik sekarang ada dan diuji anonim:
+unduh 552 MB + 142 MB lewat `bootstrap.sh` (332 s, semua checksum lolos),
+lalu graph nasional 1.621.222.584 B, `docker run` dua image dengan data rilis
+menjawab `/healthz`, `/route` (56,5 km, 987 titik) dan `/search?q=monas`.
+Satu-satunya butir terbuka: unduh ke `healthz` di bawah 5 menit tidak lolos di
+tautan yang dipakai (unduh saja 332 s pada tautan lambat).
 
 ---
 
