@@ -25,22 +25,21 @@ Diperbarui 2026-11-15 12:50 UTC.
 | 3 Dokumen publik | selesai kode | README EN + `docs/en/{QUICKSTART,API,ARCHITECTURE}.md` di kedua repo; CI route hijau |
 | 4 Peluncuran | berjalan | org `nusapeta` ada; route + place publik; stack dibuat dan CI-nya hijau; tag `v0.1.0` + `data-2026.11` terunggah dan diunduh anonim (route 5/5 + 8/8, place 3/3 + 8/8); satu-satunya yang terbuka: paket GHCR publik |
 
-Blocker yang tersisa: paket GHCR masih privat. Visibilitas paket tidak bisa
-diubah oleh token yang dipakai sesi ini; `gh` hanya punya scope
-`admin:public_key, gist, read:org, repo, workflow`, dan `GITHUB_TOKEN` dari
-Actions tidak boleh mengubah visibilitas paket (PATCH mengembalikan 404).
-Dua jalan keluar, keduanya butuh satu tindakan pemilik org:
+Blocker yang tersisa: paket GHCR masih privat. Sesi ini sudah memegang scope
+`write:packages` (dikonfirmasi `gh auth status`) dan pengguna adalah `admin`
+org, tetapi REST tetap menolak: `GET /orgs/nusapeta/packages/container/route`
+bekerja (paket tertaut ke `nusapeta/route`, tag `0.1.0` + `latest`), sedangkan
+`PATCH /orgs/nusapeta/packages/container/route -f visibility=public`
+mengembalikan `404 Not Found` untuk ketiga paket. Ini batasan GitHub, bukan
+scope: tidak ada endpoint REST untuk mengubah visibilitas paket container
+milik organisasi (lihat jawaban Stack Overflow 77092191 dan isu
+OpenCTI-Platform/connectors#5985). Satu-satunya jalan adalah UI:
 
-```bash
-# 1. tambah scope, lalu PATCH lewat API
-gh auth refresh -s write:packages,read:packages
-for p in route route-tools place; do
-  gh api -X PATCH orgs/nusapeta/packages/container/$p -f visibility=public
-done
-```
+`https://github.com/orgs/nusapeta/packages` → pilih tiap paket →
+Package settings → Change visibility → Public → ketik nama paket.
 
-atau buka `https://github.com/orgs/nusapeta/packages` → pilih tiap paket →
-Package settings → Change visibility → Public.
+Halaman langsung per paket:
+`https://github.com/orgs/nusapeta/packages/container/{route,route-tools,place}/settings`
 
 Verifikasi setelahnya: token anonim untuk `nusapeta/route:pull` harus lebih
 panjang dari 4 karakter dan manifest anonim harus `200`.
@@ -119,7 +118,7 @@ Status per 2026-11-15 12:45 UTC; CI mengacu ke commit terakhir di `main`.
 | Deskripsi / topik / homepage | ✅ terisi | ✅ terisi | terisi |
 | Tag / release | ✅ `v0.1.0` (5 aset) + `data-2026.11` (8 aset) | ✅ `v0.1.0` (3 aset) + `data-2026.11` (8 aset) | `v0.1.0` |
 | Artefak siap pakai | ✅ 8/8 aset, `sha256sum -c` anonim lolos | ✅ 8/8 aset, `sha256sum -c` anonim lolos | 1 release data |
-| Image publik (ghcr) | ⏳ dibuat 2026-11-15; paket masih privat | ⏳ dibuat 2026-11-15; paket masih privat | multi-arch |
+| Image publik (ghcr) | ⏳ dibuat 2026-11-15, tag `0.1.0` + `latest`; paket privat (visibilitas hanya lewat UI) | ⏳ dibuat 2026-11-15, tag `0.1.0` + `latest`; paket privat (visibilitas hanya lewat UI) | multi-arch |
 | Infra pribadi di tree | ✅ disanitasi | ✅ disanitasi | disanitasi |
 | `CONTRIBUTING`/`SECURITY` | ✅ EN `8e9ea46` | ✅ EN `e4f30ae` | keduanya |
 | `CODE_OF_CONDUCT`, template issue | ✅ EN `8e9ea46` | ✅ EN `e4f30ae` | keduanya |
@@ -956,8 +955,10 @@ infra, `LICENSE-DATA`.
 - [x] `data-2026.11` berisi graph nasional, graph Jawa, index, manifest,
       `PROVENANCE.txt`, `LICENSE-DATA` (8/8 aset per repo, `sha256sum -c`
       anonim lolos)
-- [ ] Image ghcr multi-arch, jalan sebagai non-root (image sudah dibuat;
-      paket masih privat, menunggu scope `write:packages`)
+- [ ] Image ghcr multi-arch, jalan sebagai non-root (image sudah dibuat dan
+      dipush `0.1.0` + `latest`; paket masih privat karena GitHub tidak
+      menyediakan endpoint REST untuk visibilitas paket container org —
+      butuh satu klik UI)
 - [x] `nusapeta/stack`: `docker compose up` → peta + rute + pencarian < 5 menit
       (data rilis sudah di disk: `docker compose up -d --wait` 6,4 s sampai
       semua container healthy, lalu `scripts/e2e.sh` 9/9; CI `43707544284`
