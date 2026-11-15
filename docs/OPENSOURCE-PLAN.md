@@ -15,20 +15,18 @@ Engine repo hanya menerima hasil akhirnya (checklist, workflow, README).
 
 ## Status eksekusi
 
-Diperbarui 2026-11-15 07:35 UTC.
+Diperbarui 2026-11-15 11:55 UTC.
 
 | Fase | Status | Bukti |
 |---|---|---|
 | 0 Higiene | selesai | route `5705e4d`, `b289cea`, `962adc4`, `baf3a9a`, `8e9ea46`; place `087ca0f`, `225b2f7`, `e13eb60`, `32add6e`, `e4f30ae` |
 | 1 Artefak | selesai lokal | `~/Projects/artifacts/{route,place}-data-2026.11`; `sha256sum -c` dan `zstd -t` lolos |
-| 2 Stack | selesai | `~/Projects/stack` `3e8adc4` (kode), `3fe08fd` (dokumen); e2e 9/9 pada fixture Jakarta dan artefak Java asli |
+| 2 Stack | selesai | `nusapeta/stack`; e2e 9/9 pada fixture Jakarta dan artefak Java asli; CI `43707544284` hijau (build dua engine + compose + e2e, 6m36s) |
 | 3 Dokumen publik | selesai kode | README EN + `docs/en/{QUICKSTART,API,ARCHITECTURE}.md` di kedua repo; CI route hijau |
-| 4 Peluncuran | tertahan | org `nusapeta` belum ada; transfer, tag, release, image publik, dan flip visibility belum bisa |
+| 4 Peluncuran | berjalan | org `nusapeta` ada; route + place sudah pindah dan publik; stack dibuat; tag, aset data, dan paket GHCR publik masih terbuka |
 
-Blocker tunggal: organisasi `nusapeta` harus dibuat manual di web. Tanpa itu
-tidak ada transfer repo, unggah aset, `go install` publik, atau perubahan
-visibilitas. Semua pekerjaan lain yang tidak bergantung pada org sudah
-dikerjakan dan diuji.
+Blocker yang tersisa: paket GHCR masih privat, dan `gh` belum punya scope
+`packages` untuk mengubahnya.
 
 ---
 
@@ -37,7 +35,7 @@ dikerjakan dan diuji.
 Satu kalimat yang harus muncul di ketiga README, sama kata-katanya:
 
 > **Stack geo Indonesia yang self-hosted: routing + geocoding, satu file per
-> engine, idle di bawah 20 MB, rebuild dalam menit, tanpa database.**
+> engine, idle sekitar 48 MB, rebuild dalam menit, tanpa database.**
 
 Angka pendukung (sudah terukur, jangan diubah tanpa pengukuran baru):
 
