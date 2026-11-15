@@ -723,12 +723,14 @@ yang sama, lalu quick start artefak rilis. Angka yang dipakai:
 | 17 MB (±) | route, place, stack | turunan 11,1 MB + 6,15 MiB |
 | 1,6 GB | route, stack | `/healthz` produksi |
 | 142 MB | place, stack | index 141.997.032 B |
-| 228 s | place, stack | NFR-006, `docs/BENCHMARKS.md` |
+| 228 s / 288 s | place, stack | NFR-006 median 228,42 s; build rilis 288 s |
 
-Ditemukan saat pass ini: `placeid/docs/en/QUICKSTART.md` menulis 288 s untuk
-build nasional, sedangkan seluruh bukti tercatat 228,42 s. Diperbaiki di
-`0311f2a` (README place) dan commit yang sama untuk QUICKSTART. Commit: route
-`5314b9f`, place `0311f2a`, stack `6671cb9`.
+Dua angka build yang beredar bukan kontradiksi: 228,42 s adalah median benchmark
+NFR-006 (`docs/BENCHMARKS.md`), 288 s adalah build yang menghasilkan index
+`data-2026.11` (`PROVENANCE.txt`, `built_at` 2026-11-15T07:03:33Z). README dan
+QUICKSTART sekarang menulis rentang `228–288 s` dengan sumber masing-masing.
+Dokumen rilis (`docs/BENCHMARKS.md`, `docs/research/*`, `docs/releases/0.1.0.md`)
+tidak disentuh. Commit: route `5314b9f`, place `0311f2a`, stack `6671cb9`.
 
 ### 7.3 Anti-slop pass
 
