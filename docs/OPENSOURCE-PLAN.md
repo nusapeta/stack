@@ -15,15 +15,15 @@ Engine repo hanya menerima hasil akhirnya (checklist, workflow, README).
 
 ## Status eksekusi
 
-Diperbarui 2026-11-15 11:55 UTC.
+Diperbarui 2026-11-15 12:50 UTC.
 
 | Fase | Status | Bukti |
 |---|---|---|
 | 0 Higiene | selesai | route `5705e4d`, `b289cea`, `962adc4`, `baf3a9a`, `8e9ea46`; place `087ca0f`, `225b2f7`, `e13eb60`, `32add6e`, `e4f30ae` |
 | 1 Artefak | selesai lokal | `~/Projects/artifacts/{route,place}-data-2026.11`; `sha256sum -c` dan `zstd -t` lolos |
-| 2 Stack | selesai | `nusapeta/stack`; e2e 9/9 pada fixture Jakarta dan artefak Java asli; CI `43712394705` hijau (`692310a`; sebelumnya `43707544284` dan `43711103633`) |
+| 2 Stack | selesai | `nusapeta/stack`; e2e 9/9 pada fixture Jakarta, artefak Java asli, dan data rilis nasional; CI `43715547736` hijau (`3304ac4`, 1 m 38 s dengan cache; sebelumnya `43712394705`, `43707544284`, `43711103633`) |
 | 3 Dokumen publik | selesai kode | README EN + `docs/en/{QUICKSTART,API,ARCHITECTURE}.md` di kedua repo; CI route hijau |
-| 4 Peluncuran | berjalan | org `nusapeta` ada; route + place sudah pindah dan publik; stack dibuat; tag, aset data, dan paket GHCR publik masih terbuka |
+| 4 Peluncuran | berjalan | org `nusapeta` ada; route + place publik; stack dibuat dan CI-nya hijau; tag `v0.1.0` + `data-2026.11` terunggah dan diunduh anonim (route 5/5 + 8/8, place 3/3 + 8/8); satu-satunya yang terbuka: paket GHCR publik |
 
 Blocker yang tersisa: paket GHCR masih privat. Visibilitas paket tidak bisa
 diubah oleh token yang dipakai sesi ini; `gh` hanya punya scope
