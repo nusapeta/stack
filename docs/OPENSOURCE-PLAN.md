@@ -457,19 +457,28 @@ membebani tiap PR.
 
 ### 4.4 Definition of done Fase 0
 
-- [ ] `go install` nusapeta/route berhasil dari direktori kosong — tertahan org
+- [x] `go install` nusapeta/route berhasil dari direktori kosong — 2026-11-15
+      12:52 UTC, `GOBIN=/tmp/goinst/bin go install
+      github.com/nusapeta/route/cmd/nusa-serve@v0.1.0` tanpa token, hasil
+      10.496.958 B
 - [x] `rg 'arifsani|192\.168\.'` bersih di file non-lisensi (`baf3a9a`)
 - [x] `nusapeta/place` tidak lagi punya file `.pyc` ter-track
 - [x] `LICENSE-DATA` ada di kedua repo
 - [x] CI nusapeta/place hijau, plus job baru di kedua repo — route 2/2 hijau 53 s (`a5b4367`); place `docs` + `rust` hijau, `arm64` dipindah ke `push` saja karena ~50 menit di QEMU (`273b296`)
 - [x] `.cargo/audit.toml` memuat ignore `RUSTSEC-2026-0186` + justifikasi
-- [ ] Deskripsi, homepage, topics terisi di kedua repo — tertahan org
+- [x] Deskripsi, homepage, topics terisi di kedua repo — route: 7 topik,
+      `https://route.arifsani.xyz`; place: 8 topik,
+      `https://route.arifsani.xyz/place/search?q=monas` (dicek 2026-11-15)
 - [x] Squash-only, delete-branch-on-merge, projects mati — `2026-11-15`
 - [x] Dependabot alerts aktif di kedua repo — `2026-11-15`
 - [x] Branch `code/antislop-audit-002` dan `docs/antislop-audit-001` dihapus — `2026-11-15`
 - [x] Semua tautan relatif di `docs/` valid
 - [x] Berkas bukti beku menunjuk padanan nama lama → baru (`paper/README.md`)
-- [ ] Demo produksi jalan dengan nama baru; metrik `nusa_*` ter-scrape — route 200; place saat ini 404, tidak di-restart tanpa persetujuan
+- [ ] Demo produksi jalan dengan nama baru; metrik `nusa_*` ter-scrape —
+      route `/healthz` 200, `/version` (`e1c4b0e`, 2026-11-12), place
+      `/place/search?q=monas` 200 (dicek 2026-11-15 12:53 UTC); `/metrics`
+      sengaja diblokir gateway (`--block-metrics`, 404) dan stack demo tidak
+      menjalankan Prometheus, jadi butir scrape tetap terbuka
 - [x] `CODE_OF_CONDUCT.md`, issue/PR template, `CHANGELOG.md` ada di kedua repo
 - [x] Riwayat git bersih dari secret (diverifikasi 2026-11-15)
 
@@ -617,7 +626,11 @@ curl -fsS 'http://127.0.0.1:8090/search?q=monas&limit=1'
 - [x] `/healthz` membawa provenance PBF (`nodes` 54.891.393, `edges`
       112.340.071, `pbf_sha256`, `built_at`)
 - [x] Nusapeta Place: unduh index → `nusa-place --verify-checksum` →
-      `/search?q=monas` 200 (diuji di dalam image `0.1.0` dengan index rilis)
+      `/search?q=monas` 200. Diulang 2026-11-15 dengan biner rilis
+      `x86_64` + `places-2026.11.idx` (141.997.032 B) dari release anonim:
+      sidecar `sha256sum -c` lolos, server melayani `/healthz` 200 dan
+      `/search?q=monas`; kontrol negatif (satu byte trailer diubah) ditolak
+      `index checksum mismatch`, tanpa flag server tetap jalan
 - [x] Image total < 40 MB (nusapeta/route) dan berjalan sebagai UID 65532,
       root read-only (36,7 MB; `docker run --read-only` tetap 200 di `/healthz`)
 - [x] Release body memuat atribusi ODbL dan tautan `LICENSE-DATA` (route
@@ -832,9 +845,11 @@ history.
 - [x] Repo topics: `openstreetmap`, `routing`, `geocoding`, `indonesia`,
       `self-hosted`, `low-memory`, `mmap`, `golang`, `rust` (route: 7 topik,
       place: 7, stack: 7)
-- [ ] Badge: build, release, image size, license, data ODbL (build ✅ di
-      ketiga README; license + data ODbL + status sudah ada; badge rilis dan
-      ukuran image belum)
+- [x] Badge: build, release, license, data ODbL (2026-11-15: route + place,
+      versi Inggris dan Indonesia; `img.shields.io/github/v/release/...`
+      menunjuk `releases/latest`). Badge ukuran image sengaja belum ada —
+      tidak ada endpoint publik untuk ukuran paket GHCR selama paket masih
+      privat
 - [ ] `CITATION.cff` di kedua repo (untuk paper) — diparkir bersama paper
 - [ ] Satu GIF 10 detik: `docker compose up` → peta → rute → cari "monas"
 
