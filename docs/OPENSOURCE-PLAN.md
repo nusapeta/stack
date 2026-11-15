@@ -99,7 +99,7 @@ Status per 2026-11-15 07:35 UTC; CI mengacu ke commit terakhir di `main`.
 | Item | nusapeta/route | nusapeta/place | Target |
 |---|---|---|---|
 | Kode terbaca, test ada | ✅ 104 test, golden | ✅ 47 test | pertahankan |
-| CI build + test | ✅ 2/2 hijau, 53 s (`a5b4367`) | ✅ `docs` + `rust` hijau; `arm64` hanya jalan di `main` (`273b296`) | hijau |
+| CI build + test | ✅ 2/2 hijau, 58 s (`257bcca`, run `43706973226`) | ✅ `docs` + `rust` hijau; `arm64` hanya jalan di `main` (`8af64a8`) | hijau |
 | Repo publik | ❌ privat, menunggu org | ❌ privat, menunggu org | publik |
 | Deskripsi / topik / homepage | ⏳ setelah transfer | ⏳ setelah transfer | terisi |
 | Tag / release | ❌ | ❌ | `v0.1.0` |
