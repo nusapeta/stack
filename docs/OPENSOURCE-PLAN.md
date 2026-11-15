@@ -118,7 +118,7 @@ Status per 2026-11-15 12:45 UTC; CI mengacu ke commit terakhir di `main`.
 | Deskripsi / topik / homepage | ✅ terisi | ✅ terisi | terisi |
 | Tag / release | ✅ `v0.1.0` (5 aset) + `data-2026.11` (8 aset) | ✅ `v0.1.0` (3 aset) + `data-2026.11` (8 aset) | `v0.1.0` |
 | Artefak siap pakai | ✅ 8/8 aset, `sha256sum -c` anonim lolos | ✅ 8/8 aset, `sha256sum -c` anonim lolos | 1 release data |
-| Image publik (ghcr) | ⏳ dibuat 2026-11-15, tag `0.1.0` + `latest`; paket privat (visibilitas hanya lewat UI) | ⏳ dibuat 2026-11-15, tag `0.1.0` + `latest`; paket privat (visibilitas hanya lewat UI) | multi-arch |
+| Image publik (ghcr) | ⏳ dibuat 2026-11-15, tag `0.1.0` + `latest`; manifest `0.1.0` terverifikasi multi-arch `linux/amd64` + `linux/arm64` dan config `User=65532:65532` (13:11 UTC); paket masih privat | ⏳ dibuat 2026-11-15, tag `0.1.0` + `latest`; manifest `0.1.0` terverifikasi multi-arch `linux/amd64` + `linux/arm64` dan config `User=65532:65532` (13:11 UTC); paket masih privat | multi-arch |
 | Infra pribadi di tree | ✅ disanitasi | ✅ disanitasi | disanitasi |
 | `CONTRIBUTING`/`SECURITY` | ✅ EN `8e9ea46` | ✅ EN `e4f30ae` | keduanya |
 | `CODE_OF_CONDUCT`, template issue | ✅ EN `8e9ea46` | ✅ EN `e4f30ae` | keduanya |
@@ -956,7 +956,9 @@ infra, `LICENSE-DATA`.
       `PROVENANCE.txt`, `LICENSE-DATA` (8/8 aset per repo, `sha256sum -c`
       anonim lolos)
 - [ ] Image ghcr multi-arch, jalan sebagai non-root (image sudah dibuat dan
-      dipush `0.1.0` + `latest`; paket masih privat karena GitHub tidak
+      dipush `0.1.0` + `latest`; manifest `0.1.0` sudah diperiksa lewat
+      registry API: `linux/amd64` + `linux/arm64`, config `User=65532:65532`
+      untuk route dan place. Paket masih privat karena GitHub tidak
       menyediakan endpoint REST untuk visibilitas paket container org —
       butuh satu klik UI)
 - [x] `nusapeta/stack`: `docker compose up` → peta + rute + pencarian < 5 menit
