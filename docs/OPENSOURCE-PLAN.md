@@ -114,7 +114,7 @@ Status per 2026-11-15 12:45 UTC; CI mengacu ke commit terakhir di `main`.
 | Item | nusapeta/route | nusapeta/place | Target |
 |---|---|---|---|
 | Kode terbaca, test ada | ✅ 104 test, golden | ✅ 47 test | pertahankan |
-| CI build + test | ✅ 2/2 hijau, 46 s (`81ec70b`, run `43714144943`) | ✅ 3/3 hijau (`26e1189`, run `43714572288`, 33 s dengan cache; run dingin `43711875214` 29 m, `arm64` 28 m 55 s) | hijau |
+| CI build + test | ✅ 2/2 hijau, 48 s (`84e6b15`, run `43716220360`) | ✅ 3/3 hijau, 38 s (`4eab670`, run `43716238500`; `docs` + `rust` + `arm64`; run dingin `43711875214` 29 m dengan `arm64` 28 m 55 s) | hijau |
 | Repo publik | ✅ publik 2026-11-15 | ✅ publik 2026-11-15 | publik |
 | Deskripsi / topik / homepage | ✅ terisi | ✅ terisi | terisi |
 | Tag / release | ✅ `v0.1.0` (5 aset) + `data-2026.11` (8 aset) | ✅ `v0.1.0` (3 aset) + `data-2026.11` (8 aset) | `v0.1.0` |
