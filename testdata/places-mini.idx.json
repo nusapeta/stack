@@ -1,0 +1,41 @@
+{
+  "format_version": 1,
+  "builder": "nusa-place 0.1.0",
+  "built_at": "2026-11-15T07:08:46Z",
+  "pbf": {
+    "name": "mini.osm.pbf",
+    "sha256": "332bb84a1b686d4e2455d45e1bd8b1609e73d3d6b57da73810ab7fff0e314c09",
+    "bytes": 703
+  },
+  "index": {
+    "name": "places-mini.idx",
+    "sha256": "2113ddd8125e4462c027064ac93c0bc4d6ab5f9416e4a64cec5e9a10bd0d67a1",
+    "bytes": 1424
+  },
+  "counts": {
+    "features": 6,
+    "admins": 0,
+    "names": 6,
+    "postings": 16,
+    "skipped_features": 0,
+    "invalid_polygons": 0,
+    "missing_node_refs": 0,
+    "nodes": 4,
+    "ways": 2,
+    "relations": 0,
+    "classes": {
+      "building": 1,
+      "highway": 2,
+      "place": 1,
+      "shop": 1,
+      "tourism": 1
+    }
+  },
+  "bbox": [
+    -6.205,
+    106.8,
+    -6.1754,
+    106.85
+  ],
+  "warnings": []
+}

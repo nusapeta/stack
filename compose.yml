@@ -1,0 +1,182 @@
+name: nusapeta-stack
+
+x-route: &nusapeta-route
+  image: ${NUSAPETA_ROUTE_IMAGE:-ghcr.io/nusapeta/route:0.1.0}
+  restart: unless-stopped
+  read_only: true
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+  pids_limit: 256
+  volumes:
+    - ${DATA_DIR:-./data}:/data:ro
+  environment:
+    GOMEMLIMIT: 1GiB
+  # National graph is mapped read-only; measured peak is 225 MiB RSS for four
+  # parallel 96 km routes, so 1536m leaves room for page cache.
+  mem_limit: 1536m
+  memswap_limit: 1536m
+  stop_grace_period: 25s
+  healthcheck:
+    test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthz"]
+    interval: 10s
+    timeout: 3s
+    retries: 6
+    start_period: 10s
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+x-place: &nusapeta-place
+  image: ${NUSAPETA_PLACE_IMAGE:-ghcr.io/nusapeta/place:0.1.0}
+  restart: unless-stopped
+  read_only: true
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+  pids_limit: 128
+  volumes:
+    - ${DATA_DIR:-./data}:/data:ro
+  environment:
+    RUST_LOG: info
+    NUSA_PLACE_LOG_FORMAT: json
+  mem_limit: 256m
+  memswap_limit: 256m
+  healthcheck:
+    test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8090/healthz"]
+    interval: 10s
+    timeout: 3s
+    retries: 6
+    start_period: 10s
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  route:
+    <<: *nusapeta-route
+    container_name: nusapeta-stack-route
+    command:
+      - -graph
+      - /data/${NUSAPETA_ROUTE_GRAPH:-java.graph}
+      - -profile
+      - car
+      - -addr
+      - :8080
+      - -conc
+      - "2"
+      - -workspace-mb
+      - "384"
+      - -max-route-km
+      - "100"
+      - -timeout
+      - 10s
+      - -budget
+      - 6s
+      - -max-expansions
+      - "4000000"
+      - -rate
+      - "15"
+      - -burst
+      - "5"
+      - -maxage
+      - "3600"
+      - -trust-proxy
+
+  route-motor:
+    <<: *nusapeta-route
+    container_name: nusapeta-stack-route-motor
+    command:
+      - -graph
+      - /data/${NUSAPETA_ROUTE_GRAPH:-java.graph}
+      - -profile
+      - motor
+      - -addr
+      - :8080
+      - -conc
+      - "2"
+      - -workspace-mb
+      - "384"
+      - -max-route-km
+      - "100"
+      - -timeout
+      - 10s
+      - -budget
+      - 6s
+      - -max-expansions
+      - "4000000"
+      - -rate
+      - "15"
+      - -burst
+      - "5"
+      - -maxage
+      - "3600"
+      - -trust-proxy
+
+  place:
+    <<: *nusapeta-place
+    container_name: nusapeta-stack-place
+    command:
+      - --index
+      - /data/${NUSAPETA_PLACE_INDEX:-places-2026.11.idx}
+      - --manifest
+      - /data/${NUSAPETA_PLACE_MANIFEST:-places-2026.11.idx.json}
+      - --verify-checksum
+      - --bind
+      - 0.0.0.0:8090
+
+  gateway:
+    image: ${NUSAPETA_ROUTE_IMAGE:-ghcr.io/nusapeta/route:0.1.0}
+    container_name: nusapeta-stack-gateway
+    restart: unless-stopped
+    entrypoint: ["/usr/local/bin/nusa-gateway"]
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 64
+    ports:
+      - "127.0.0.1:${NUSAPETA_PORT:-8080}:8080"
+    mem_limit: 64m
+    memswap_limit: 64m
+    depends_on:
+      route:
+        condition: service_healthy
+      route-motor:
+        condition: service_healthy
+      place:
+        condition: service_healthy
+    command:
+      - -addr
+      - :8080
+      - -mobil
+      - http://route:8080
+      - -motor
+      - http://route-motor:8080
+      - -default
+      - mobil
+      - -place
+      - http://place:8090
+      - -place-rate
+      - "240"
+      - -place-burst
+      - "40"
+      - -block-metrics
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

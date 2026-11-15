@@ -1,0 +1,37 @@
+# Optional public access through a Cloudflare Tunnel.
+#   CLOUDFLARE_TUNNEL_TOKEN=... docker compose -f compose.yml -f compose.tunnel.yml up -d
+#
+# The gateway keeps its loopback port; cloudflared reaches it over the Compose
+# network. Point the tunnel at http://gateway:8080, not at a host port.
+services:
+  gateway:
+    command:
+      - -addr
+      - :8080
+      - -mobil
+      - http://route:8080
+      - -motor
+      - http://route-motor:8080
+      - -default
+      - mobil
+      - -place
+      - http://place:8090
+      - -place-rate
+      - "240"
+      - -place-burst
+      - "40"
+      - -block-metrics
+      - -trust-proxy
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: nusapeta-stack-cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:-}
+    depends_on:
+      gateway:
+        condition: service_healthy
+    mem_limit: 128m
+    memswap_limit: 128m
