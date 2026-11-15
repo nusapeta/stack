@@ -91,7 +91,7 @@ menutup pintu scope creep sebelum ada yang memintanya.
 | D6  | Versioning     | Kode: SemVer tag `v0.1.0`. Data: tag `data-2026.11` terpisah                                                                                                                         | Data dan kode punya siklus hidup berbeda                                               | 1 workflow                              |
 | D7  | Kontribusi     | DCO (`Signed-off-by`), tanpa CLA                                                                                                                                                     | CLA menghalangi kontributor                                                            | 1 file                                  |
 | D8  | Kompatibilitas | Format `.graph` v5 dan `.idx` v1 = kontrak publik; versi di header                                                                                                                   | Format sudah versioned; jangan janjikan stabilitas API HTTP di 0.x                     | —                                       |
-| D9  | Domain demo    | Satu situs `route.arifsani.xyz`: rute di `/route`, pencarian di `/place/*` (reverse proxy ke nusapeta/place); tidak ada `place.arifsani.xyz` terpisah | Satu domain = satu TLS + satu tunnel; pencarian sudah tampil di UI yang sama | 0                                       |
+| D9  | Domain demo    | Satu situs `demo.nusapeta.web.id`: rute di `/route`, pencarian di `/place/*` (reverse proxy ke nusapeta/place); tidak ada subdomain pencarian terpisah (domain pindah dari domain pribadi 2026-11-15) | Satu domain = satu TLS + satu tunnel; pencarian sudah tampil di UI yang sama | 0                                       |
 
 D2 **sudah dieksekusi** 2026-11-15, sebelum ada rilis, tag, atau image:
 module `github.com/nusapeta/route`, crate `nusa-place`, binary `nusa-*`,
@@ -192,7 +192,7 @@ dari internet setelah organisasi `nusapeta` dibuat dan repo publik.
 |---|---|
 | `deploy/docker-compose.yml` | komentar homelab + `http://nusapeta-place:8090` tetap, tapi jadikan `-place` **opsional** (sudah default kosong) dan beri komentar "contoh, hapus bila tidak memakai nusapeta/place" |
 | `deploy/docker-compose.homelab.yml` | pindah ke `deploy/examples/homelab/` |
-| `docs/bruno/`, `docs/*.postman_environment*.json` | pindah ke `contrib/http/`, ganti host jadi `${BASE_URL}`; hapus `192.168.1.219` dan `route.arifsani.xyz` |
+| `docs/bruno/`, `docs/*.postman_environment*.json` | pindah ke `contrib/http/`, ganti host jadi `${BASE_URL}`; hapus `192.168.1.219` dan host demo pribadi |
 | `deploy/README.md` | hapus domain pribadi, ganti `${PUBLIC_HOST}` |
 | `anti-slop/` | pindah ke `docs/claims/` + `README.md` yang menjelaskan ini ledger klaim; nama folder internal jangan tampil di repo publik |
 
@@ -299,13 +299,13 @@ jalankan setelah file komunitas masuk, sebelum flip visibility.
 # metadata: tanpa ini repo tidak muncul di pencarian maupun topic
 gh repo edit nusapeta/route \
   --description "Memory-mapped OSM router for Indonesia: one binary, one graph file, ~17 MB idle" \
-  --homepage "https://route.arifsani.xyz" \
+  --homepage "https://demo.nusapeta.web.id" \
   --add-topic openstreetmap --add-topic routing --add-topic indonesia \
   --add-topic self-hosted --add-topic golang --add-topic low-memory --add-topic mmap
 
 gh repo edit nusapeta/place \
   --description "Self-hosted OpenStreetMap geocoder for Indonesia: one index file, ~6 MB idle" \
-  --homepage "https://route.arifsani.xyz/place/search?q=monas" \
+  --homepage "https://demo.nusapeta.web.id/place/search?q=monas" \
   --add-topic openstreetmap --add-topic geocoding --add-topic indonesia \
   --add-topic self-hosted --add-topic rust --add-topic low-memory --add-topic reverse-geocoding
 
@@ -380,7 +380,7 @@ categories = ["science::geo"]
 publish = false
 ```
 
-**P0.4 Sanitasi infra.** `deploy/openresty/place.arifsani.xyz.conf` →
+**P0.4 Sanitasi infra.** `deploy/openresty/<host>.conf` →
 `deploy/examples/openresty/place.conf.example`, ganti `server_name`,
 `access_log`, path sertifikat jadi placeholder. Pastikan `deploy/.env`
 tidak pernah ter-track (sudah di `.gitignore`; verifikasi dengan
@@ -467,8 +467,8 @@ membebani tiap PR.
 - [x] CI nusapeta/place hijau, plus job baru di kedua repo — route 2/2 hijau 53 s (`a5b4367`); place `docs` + `rust` hijau, `arm64` dipindah ke `push` saja karena ~50 menit di QEMU (`273b296`)
 - [x] `.cargo/audit.toml` memuat ignore `RUSTSEC-2026-0186` + justifikasi
 - [x] Deskripsi, homepage, topics terisi di kedua repo — route: 7 topik,
-      `https://route.arifsani.xyz`; place: 8 topik,
-      `https://route.arifsani.xyz/place/search?q=monas` (dicek 2026-11-15)
+      `https://demo.nusapeta.web.id`; place: 8 topik,
+      `https://demo.nusapeta.web.id/place/search?q=monas` (dicek 2026-11-15)
 - [x] Squash-only, delete-branch-on-merge, projects mati — `2026-11-15`
 - [x] Dependabot alerts aktif di kedua repo — `2026-11-15`
 - [x] Branch `code/antislop-audit-002` dan `docs/antislop-audit-001` dihapus — `2026-11-15`
@@ -823,7 +823,7 @@ file) dan `check_consistency.py` (place, 39 file) tetap lolos.
    Segera setelah itu: `security_and_analysis` (secret scanning + push
    protection) dan branch protection yang tadinya 403 (§4.2).
 3. `nusapeta/stack` dibuat publik, lalu nusapeta/route di-*pin* di profil + README stack.
-4. Demo hidup: `route.arifsani.xyz` tetap jalan dengan rute dan pencarian
+4. Demo hidup: `demo.nusapeta.web.id` tetap jalan dengan rute dan pencarian
    (`/place/*`); tambahkan catatan rate limit (15/menit, burst 5) dan tombol
    "deploy sendiri".
 5. Tulis satu post teknis: **"47 MB untuk seluruh stack geo Indonesia"**.
@@ -1029,7 +1029,7 @@ go vet ./... && go test ./... && gofmt -l .       # target: bersih
 cd place
 git rm -r --cached scripts/__pycache__
 printf '\n# Python\n__pycache__/\n*.pyc\n' >> .gitignore
-git mv deploy/openresty/place.arifsani.xyz.conf deploy/examples/openresty/place.conf.example
+git mv deploy/openresty/<host>.conf deploy/examples/openresty/place.conf.example
 rg -n 'arifsani' --glob '!LICENSE'                # target: kosong
 cargo fmt --all -- --check && cargo clippy --all-targets -- -D warnings && cargo test
 ```
