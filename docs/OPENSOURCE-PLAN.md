@@ -92,21 +92,21 @@ satunya langkah yang tidak bisa diotomasi.
 
 ## 3. Skor kesiapan
 
-Status per 2026-11-15 07:35 UTC; CI mengacu ke commit terakhir di `main`.
+Status per 2026-11-15 12:05 UTC; CI mengacu ke commit terakhir di `main`.
 
 | Item | nusapeta/route | nusapeta/place | Target |
 |---|---|---|---|
 | Kode terbaca, test ada | ✅ 104 test, golden | ✅ 47 test | pertahankan |
-| CI build + test | ✅ 2/2 hijau, 58 s (`257bcca`, run `43706973226`) | ✅ `docs` + `rust` hijau; `arm64` hanya jalan di `main` (`8af64a8`) | hijau |
-| Repo publik | ❌ privat, menunggu org | ❌ privat, menunggu org | publik |
-| Deskripsi / topik / homepage | ⏳ setelah transfer | ⏳ setelah transfer | terisi |
-| Tag / release | ❌ | ❌ | `v0.1.0` |
-| Artefak siap pakai | ✅ lokal, belum diunggah | ✅ lokal, belum diunggah | 1 release data |
-| Image publik (ghcr) | ✅ lokal 36,7 MB; ❌ publik | ✅ lokal 147 MB; ❌ publik | multi-arch |
+| CI build + test | ✅ 2/2 hijau, 58 s (`257bcca`, run `43706973226`) | ⏳ run `43711875214` di `263b53c`; `arm64` hanya jalan di `main` | hijau |
+| Repo publik | ✅ publik 2026-11-15 | ✅ publik 2026-11-15 | publik |
+| Deskripsi / topik / homepage | ✅ terisi | ✅ terisi | terisi |
+| Tag / release | ✅ `v0.1.0` + `data-2026.11`, 12 aset | ⏳ `v0.1.0` di-push; release berjalan | `v0.1.0` |
+| Artefak siap pakai | ✅ 8/8 aset, `sha256sum -c` anonim lolos | ✅ 8/8 aset, `sha256sum -c` anonim lolos | 1 release data |
+| Image publik (ghcr) | ⏳ dibuat 2026-11-15; paket masih privat | ⏳ dibuat 2026-11-15; paket masih privat | multi-arch |
 | Infra pribadi di tree | ✅ disanitasi | ✅ disanitasi | disanitasi |
 | `CONTRIBUTING`/`SECURITY` | ✅ EN `8e9ea46` | ✅ EN `e4f30ae` | keduanya |
 | `CODE_OF_CONDUCT`, template issue | ✅ EN `8e9ea46` | ✅ EN `e4f30ae` | keduanya |
-| `go install` berfungsi | ✅ lokal (`github.com/nusapeta/route`); ⏳ org belum ada | n/a | ✅ |
+| `go install` berfungsi | ✅ diuji dari `proxy.golang.org` (`nusa-serve@v0.1.0`) | n/a | ✅ |
 | Batas lisensi data | ✅ `LICENSE-DATA` | ✅ `LICENSE-DATA` | eksplisit |
 | README Inggris | ✅ `README.md` + `docs/en/` | ✅ `README.md` + `docs/en/` | ✅ |
 
@@ -896,23 +896,31 @@ infra, `LICENSE-DATA`.
 
 ## 12. Definition of done `v0.1.0`
 
-- [ ] Tiga repo publik, tanpa path/domain pribadi
+- [x] Tiga repo publik, tanpa path/domain pribadi
 - [ ] `git tag v0.1.0` + GitHub Release berisi binary, checksum, changelog
-- [ ] `data-2026.11` berisi graph nasional, graph Jawa, index, manifest,
-      `PROVENANCE.txt`, `LICENSE-DATA`
-- [ ] Image ghcr multi-arch, jalan sebagai non-root
-- [ ] `nusapeta/stack`: `docker compose up` → peta + rute + pencarian < 5 menit
-- [ ] `scripts/e2e.sh` hijau di mesin bersih
-- [ ] README EN memuat positioning, 4 angka, quick start rilis, batasan,
+      (route ✅ 5 aset; place ⏳ workflow rilis berjalan)
+- [x] `data-2026.11` berisi graph nasional, graph Jawa, index, manifest,
+      `PROVENANCE.txt`, `LICENSE-DATA` (8/8 aset per repo, `sha256sum -c`
+      anonim lolos)
+- [ ] Image ghcr multi-arch, jalan sebagai non-root (image sudah dibuat;
+      paket masih privat, menunggu scope `write:packages`)
+- [x] `nusapeta/stack`: `docker compose up` → peta + rute + pencarian < 5 menit
+      (CI `43707544284`: build 2 image + compose + e2e dalam 6m36s)
+- [x] `scripts/e2e.sh` hijau di mesin bersih (runner ubuntu-24.04 kosong,
+      9/9, bukan mesin pengembang)
+- [x] README EN memuat positioning, 4 angka, quick start rilis, batasan,
       atribusi
-- [ ] `CONTRIBUTING`, `SECURITY`, `CODE_OF_CONDUCT`, template isu/PR di
+- [x] `CONTRIBUTING`, `SECURITY`, `CODE_OF_CONDUCT`, template isu/PR di
       ketiga repo
-- [ ] CI: build, test, race, clippy, audit, link check, `go mod tidy -diff`
-- [ ] Branch protection aktif dengan status check `test` / `docs`+`rust`
-- [ ] Secret scanning + push protection aktif di kedua repo
-- [ ] Deskripsi, homepage, topics terisi; projects/wiki mati
+- [x] CI: build, test, race, clippy, audit, link check, `go mod tidy -diff`
+- [x] Branch protection aktif dengan status check `test` / `docs`+`rust` /
+      `e2e`
+- [x] Secret scanning + push protection aktif di kedua repo
+- [x] Deskripsi, homepage, topics terisi; projects/wiki mati
 - [ ] Draf paper dipublikasikan dengan DOI, E2 tercatat sebagai limitation
-- [ ] Tidak ada klaim performa baru yang tidak ada di `RESULTS.md`
+      (diparkir dari peluncuran ini; gate akurasi E1 belum lolos: median Δ
+      0,23 %, p95 14,49 %)
+- [x] Tidak ada klaim performa baru yang tidak ada di `RESULTS.md`
 
 ---
 
