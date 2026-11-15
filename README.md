@@ -12,7 +12,7 @@ compose bundle: two route profiles, one gateway, no build step on the host.
 | Idle RSS, whole stack | **±17 MB** |
 | Route graph, national | **1.6 GB** on disk (552 MB compressed) |
 | Place index | **142 MB** |
-| Place build from the national PBF | **228–288 s** |
+| Place build from the national PBF | **228 s** |
 
 ```bash
 cp .env.example .env
