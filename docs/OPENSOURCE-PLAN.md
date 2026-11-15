@@ -840,11 +840,17 @@ history.
 
 ### 8.2 Aset peluncuran
 
-- [ ] Social preview 1280×640 untuk tiap repo (hanya lewat UI GitHub; tidak
-      ada endpoint API untuk mengunggahnya)
+- [x] Aset social preview 1280×640 untuk tiap repo:
+      `docs/assets/social-preview.svg` + `.png` (route, place, stack;
+      dibuat 2026-11-15, latar `#0b0f14`, warna aksen per repo, angkanya
+      diambil dari pengukuran §3 — 54,9M node / 112,3M edge / 17,8 MB
+      idle; 135 MiB index / 6,2 MiB idle; 4 kontainer / 32,6 MiB RSS /
+      9/9 e2e)
+- [ ] Unggah ketiga aset itu ke Settings → Social preview (hanya lewat UI
+      GitHub; tidak ada endpoint API untuk mengunggahnya)
 - [x] Repo topics: `openstreetmap`, `routing`, `geocoding`, `indonesia`,
       `self-hosted`, `low-memory`, `mmap`, `golang`, `rust` (route: 7 topik,
-      place: 7, stack: 7)
+      place: 8, stack: 7)
 - [x] Badge: build, release, license, data ODbL (2026-11-15: route + place,
       versi Inggris dan Indonesia; `img.shields.io/github/v/release/...`
       menunjuk `releases/latest`). Badge ukuran image sengaja belum ada:

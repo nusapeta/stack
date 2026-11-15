@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" font-family="Adwaita Sans, Liberation Sans, sans-serif">
+  <defs>
+    <pattern id="dots" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#1b2534"/>
+    </pattern>
+  </defs>
+  <rect width="1280" height="640" fill="#0b0f14"/>
+  <rect width="1280" height="640" fill="url(#dots)"/>
+
+  <g fill="none" stroke-width="3" stroke-linejoin="round">
+    <rect x="800" y="300" width="150" height="110" rx="8" stroke="#a78bfa" stroke-opacity="0.55"/>
+    <rect x="1000" y="300" width="150" height="110" rx="8" stroke="#22d3ee" stroke-opacity="0.55"/>
+    <rect x="900" y="470" width="150" height="110" rx="8" stroke="#f59e0b" stroke-opacity="0.55"/>
+    <path d="M875 355 L1000 355" stroke="#a78bfa" stroke-opacity="0.45"/>
+    <path d="M975 410 L975 470" stroke="#22d3ee" stroke-opacity="0.45"/>
+    <path d="M1075 410 L975 470" stroke="#f59e0b" stroke-opacity="0.3"/>
+  </g>
+
+  <rect x="96" y="122" width="12" height="12" fill="#a78bfa"/>
+  <text x="122" y="134" font-size="24" letter-spacing="3" fill="#8fa3b8">nusapeta</text>
+
+  <text x="92" y="272" font-family="JetBrainsMono NF, Liberation Mono, monospace" font-size="92" font-weight="bold" fill="#f8fafc">stack</text>
+
+  <text x="96" y="352" font-size="30" fill="#cbd5e1">Route and place search behind one</text>
+  <text x="96" y="394" font-size="30" fill="#cbd5e1">compose file, on 2 GB of RAM.</text>
+
+  <rect x="96" y="446" width="120" height="4" fill="#a78bfa"/>
+
+  <text x="96" y="502" font-family="JetBrainsMono NF, Liberation Mono, monospace" font-size="24" fill="#94a3b8">4 containers &#183; 32.6 MiB RSS &#183; 9/9 e2e green</text>
+  <text x="96" y="592" font-size="20" fill="#5b6b7f">docker compose up &#183; MIT code, ODbL data &#183; research preview</text>
+</svg>
