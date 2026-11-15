@@ -18,7 +18,8 @@ promise of a fix date.
 
 The default stack has no authentication. It is safe only when the gateway port
 stays on loopback, or when a trusted TLS terminator or tunnel enforces access
-control in front.
+control in front. [docs/SECURITY-MODEL.md](docs/SECURITY-MODEL.md) explains the
+three supported ways to expose it and what each one costs.
 
 | Asset | Threat | Mitigation |
 |---|---|---|

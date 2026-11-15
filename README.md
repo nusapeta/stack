@@ -57,6 +57,7 @@ They exist to test the integration, not to answer real queries.
 
 - [QUICKSTART](docs/QUICKSTART.md) (English) and [QUICKSTART.id](docs/QUICKSTART.id.md)
 - [ARCHITECTURE](docs/ARCHITECTURE.md)
+- [Security model](docs/SECURITY-MODEL.md) — the three supported ways to expose it
 - [Open-source execution plan](docs/OPENSOURCE-PLAN.md)
 - [curl examples](examples/curl.md)
 - [Flutter polyline snippet](examples/flutter/route_client.dart)
