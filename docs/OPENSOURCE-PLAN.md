@@ -43,9 +43,9 @@ Angka pendukung (sudah terukur, jangan diubah tanpa pengukuran baru):
 
 | Metrik | Nilai | Sumber |
 |---|---:|---|
-| Idle RSS nusapeta/route (graph nasional) | 11,1 MB | `nusapeta/route/docs/ROADMAP.md` budget |
+| Idle RSS nusapeta/route (graph nasional) | 17,8 MB | ukur 2026-11-15, image 0.1.0, compose (`-conc 2 -workspace-mb 384`) |
 | Idle RSS nusapeta/place | 6,15 MiB | `nusapeta/place/docs/research/NFR-REVIEW.md` NFR-004 |
-| Total idle stack | **±17 MB** | penjumlahan, sebut sebagai turunan |
+| Total idle stack | **48.480 kB RSS / 41.369 kB PSS** | ukur 2026-11-15, `stack/compose.yml`, empat proses |
 | Artefak nusapeta/route nasional | 1.621 MB | `/healthz` produksi |
 | Artefak nusapeta/place | 141.997.032 B | NFR-003 |
 | Build nusapeta/route nasional | 1m12s ekstraksi | ROADMAP budget |
@@ -707,7 +707,7 @@ pada perintah reproduksi OSRM dengan `$USER` (`baf3a9a`).
 
 ### 7.2 Konten wajib di README EN
 
-1. Satu kalimat positioning + 4 angka (17 MB, 1,6 GB, 142 MB, 228 s). Kalimat
+1. Satu kalimat positioning + 4 angka (47 MB, 1,6 GB, 142 MB, 228 s). Kalimat
    positioning sama kata-katanya di tiga README; angka 142 MB dan 228 s hanya
    masuk akal di `nusapeta/stack`, jadi tabel empat angka ada di sana dan tiap
    README engine menyebut angka miliknya sendiri.
@@ -725,7 +725,7 @@ yang sama, lalu quick start artefak rilis. Angka yang dipakai:
 
 | Angka | Letak | Sumber |
 |---|---|---|
-| 17 MB (±) | route, place, stack | turunan 11,1 MB + 6,15 MiB |
+| 47 MB | route, place, stack | ukur 2026-11-15 `stack/compose.yml`: 48.480 kB RSS (41.369 kB PSS) |
 | 1,6 GB | route, stack | `/healthz` produksi |
 | 142 MB | place, stack | index 141.997.032 B |
 | 228 s | place, stack | NFR-006 median 228,42 s (`docs/BENCHMARKS.md`, `docs/research/P4-EVIDENCE.md` P5-05) |
@@ -781,7 +781,7 @@ file) dan `check_consistency.py` (place, 39 file) tetap lolos.
 4. Demo hidup: `route.arifsani.xyz` tetap jalan dengan rute dan pencarian
    (`/place/*`); tambahkan catatan rate limit (15/menit, burst 5) dan tombol
    "deploy sendiri".
-5. Tulis satu post teknis: **"17 MB untuk seluruh stack geo Indonesia"**.
+5. Tulis satu post teknis: **"47 MB untuk seluruh stack geo Indonesia"**.
    Isi: tabel budget, tiga grafik (RSS, ukuran artefak, waktu build), cara
    reproduksi, dan bagian "apa yang tidak kami klaim".
 6. Sebar: Hacker News (Show HN), r/golang, r/rust, r/openstreetmap,

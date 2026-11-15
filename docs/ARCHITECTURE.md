@@ -51,7 +51,7 @@ all services.
 |---|---:|---|
 | `route` | 1536m | measured 225 MiB RSS for four parallel 96 km routes; file pages are reclaimable |
 | `route-motor` | 1536m | same graph, second process |
-| `place` | 256m | 142 MB mapped index, anonymous RSS under 20 MB idle |
+| `place` | 256m | 142 MB mapped index, measured 5,8 MB RSS idle |
 | `gateway` | 64m | proxy only |
 
 Total ceiling is about 3.4 GB. A host with the Java extract instead of the
