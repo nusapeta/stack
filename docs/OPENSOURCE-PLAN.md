@@ -21,7 +21,7 @@ Diperbarui 2026-11-15 11:55 UTC.
 |---|---|---|
 | 0 Higiene | selesai | route `5705e4d`, `b289cea`, `962adc4`, `baf3a9a`, `8e9ea46`; place `087ca0f`, `225b2f7`, `e13eb60`, `32add6e`, `e4f30ae` |
 | 1 Artefak | selesai lokal | `~/Projects/artifacts/{route,place}-data-2026.11`; `sha256sum -c` dan `zstd -t` lolos |
-| 2 Stack | selesai | `nusapeta/stack`; e2e 9/9 pada fixture Jakarta dan artefak Java asli; CI `43707544284` hijau (build dua engine + compose + e2e, 6m36s) |
+| 2 Stack | selesai | `nusapeta/stack`; e2e 9/9 pada fixture Jakarta dan artefak Java asli; CI `43712394705` hijau (`692310a`; sebelumnya `43707544284` dan `43711103633`) |
 | 3 Dokumen publik | selesai kode | README EN + `docs/en/{QUICKSTART,API,ARCHITECTURE}.md` di kedua repo; CI route hijau |
 | 4 Peluncuran | berjalan | org `nusapeta` ada; route + place sudah pindah dan publik; stack dibuat; tag, aset data, dan paket GHCR publik masih terbuka |
 
@@ -114,7 +114,7 @@ Status per 2026-11-15 12:05 UTC; CI mengacu ke commit terakhir di `main`.
 | Item | nusapeta/route | nusapeta/place | Target |
 |---|---|---|---|
 | Kode terbaca, test ada | ✅ 104 test, golden | ✅ 47 test | pertahankan |
-| CI build + test | ✅ 2/2 hijau, 58 s (`257bcca`, run `43706973226`) | ⏳ run `43711875214` di `263b53c`; `arm64` hanya jalan di `main` | hijau |
+| CI build + test | ✅ 2/2 hijau, 50 s (`261a452`, run `43712325404`) | ⏳ run `43711875214` di `263b53c`; `arm64` hanya jalan di `main` | hijau |
 | Repo publik | ✅ publik 2026-11-15 | ✅ publik 2026-11-15 | publik |
 | Deskripsi / topik / homepage | ✅ terisi | ✅ terisi | terisi |
 | Tag / release | ✅ `v0.1.0` + `data-2026.11`, 12 aset | ⏳ `v0.1.0` di-push; release berjalan | `v0.1.0` |
