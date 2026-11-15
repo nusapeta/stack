@@ -497,8 +497,13 @@ Perkiraan 0,9–1,1 GB untuk graph nasional **tidak berlaku**: hasil terukur
 
 Aturan: **artefak dibangun di homelab, bukan di CI.** Runner GitHub 16 GB RAM
 cukup secara teori, tapi PBF 1,7 GB + `target/` + artefak melewati disk 14 GB
-dan membuat rilis tidak deterministik. Skrip `scripts/publish_data.sh`
-memakai `gh release upload` dengan `--clobber`.
+dan membuat rilis tidak deterministik. Tiap repo punya `scripts/publish_data.sh`
+sendiri (`nusapeta/route`, `nusapeta/place`) karena nama aset dan pemeriksaan
+integritasnya berbeda: skrip place memverifikasi digest isi index terhadap
+`index.sha256` di manifest sebelum mengunggah. Keduanya memakai
+`gh release upload --clobber`, menolak tag yang tidak berawalan `data-`, dan
+menolak publikasi bila `PROVENANCE.txt` atau `LICENSE-DATA` tidak ada di
+direktori artefak. Keduanya sudah diuji pada tag sekali pakai.
 
 ### 5.2 Rilis kode
 
@@ -812,7 +817,7 @@ bisa ditepati.
 |---|---|---|
 | Refresh data nusapeta/route | `make refresh REGION=java`, `scripts/build-national.sh` | `data-YYYY.MM` |
 | Refresh data nusapeta/place | `nusa-place-build ... --verify` | `data-YYYY.MM` |
-| Publikasi | `scripts/publish_data.sh` (baru) | release + sha256 |
+| Publikasi | `scripts/publish_data.sh` di repo masing-masing | release + sha256 |
 | Benchmark | `bin/nusa-bench`, `scripts/load_test.py` | tambah baris di `BENCHMARKS.md` |
 | Triage isu | label `needs-repro`, `data`, `docs`, `good first issue` | — |
 
