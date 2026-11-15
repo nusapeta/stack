@@ -76,7 +76,7 @@ menutup pintu scope creep sebelum ada yang memintanya.
 | D6  | Versioning     | Kode: SemVer tag `v0.1.0`. Data: tag `data-2026.11` terpisah                                                                                                                         | Data dan kode punya siklus hidup berbeda                                               | 1 workflow                              |
 | D7  | Kontribusi     | DCO (`Signed-off-by`), tanpa CLA                                                                                                                                                     | CLA menghalangi kontributor                                                            | 1 file                                  |
 | D8  | Kompatibilitas | Format `.graph` v5 dan `.idx` v1 = kontrak publik; versi di header                                                                                                                   | Format sudah versioned; jangan janjikan stabilitas API HTTP di 0.x                     | —                                       |
-| D9  | Domain demo    | Tetap `route.arifsani.xyz` / `place.arifsani.xyz` sampai peluncuran selesai; domain merek dibeli hanya bila ada alasan kuat                                                          | TLS + tunnel sudah jalan; mengganti domain sebelum rilis menambah risiko tanpa manfaat | 0                                       |
+| D9  | Domain demo    | Satu situs `route.arifsani.xyz`: rute di `/route`, pencarian di `/place/*` (reverse proxy ke nusapeta/place); tidak ada `place.arifsani.xyz` terpisah | Satu domain = satu TLS + satu tunnel; pencarian sudah tampil di UI yang sama | 0                                       |
 
 D2 **sudah dieksekusi** 2026-11-15, sebelum ada rilis, tag, atau image:
 module `github.com/nusapeta/route`, crate `nusa-place`, binary `nusa-*`,
@@ -290,7 +290,7 @@ gh repo edit nusapeta/route \
 
 gh repo edit nusapeta/place \
   --description "Self-hosted OpenStreetMap geocoder for Indonesia: one index file, ~6 MB idle" \
-  --homepage "https://place.arifsani.xyz" \
+  --homepage "https://route.arifsani.xyz/place/search?q=monas" \
   --add-topic openstreetmap --add-topic geocoding --add-topic indonesia \
   --add-topic self-hosted --add-topic rust --add-topic low-memory --add-topic reverse-geocoding
 
@@ -778,8 +778,9 @@ file) dan `check_consistency.py` (place, 39 file) tetap lolos.
    Segera setelah itu: `security_and_analysis` (secret scanning + push
    protection) dan branch protection yang tadinya 403 (§4.2).
 3. `nusapeta/stack` dibuat publik, lalu nusapeta/route di-*pin* di profil + README stack.
-4. Demo hidup: `route.arifsani.xyz` dan `place.arifsani.xyz` tetap jalan,
-   tambahkan catatan rate limit (15/menit, burst 5) dan tombol "deploy sendiri".
+4. Demo hidup: `route.arifsani.xyz` tetap jalan dengan rute dan pencarian
+   (`/place/*`); tambahkan catatan rate limit (15/menit, burst 5) dan tombol
+   "deploy sendiri".
 5. Tulis satu post teknis: **"17 MB untuk seluruh stack geo Indonesia"**.
    Isi: tabel budget, tiga grafik (RSS, ukuran artefak, waktu build), cara
    reproduksi, dan bagian "apa yang tidak kami klaim".
