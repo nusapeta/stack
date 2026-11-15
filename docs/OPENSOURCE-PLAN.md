@@ -25,8 +25,25 @@ Diperbarui 2026-11-15 11:55 UTC.
 | 3 Dokumen publik | selesai kode | README EN + `docs/en/{QUICKSTART,API,ARCHITECTURE}.md` di kedua repo; CI route hijau |
 | 4 Peluncuran | berjalan | org `nusapeta` ada; route + place sudah pindah dan publik; stack dibuat; tag, aset data, dan paket GHCR publik masih terbuka |
 
-Blocker yang tersisa: paket GHCR masih privat, dan `gh` belum punya scope
-`packages` untuk mengubahnya.
+Blocker yang tersisa: paket GHCR masih privat. Visibilitas paket tidak bisa
+diubah oleh token yang dipakai sesi ini; `gh` hanya punya scope
+`admin:public_key, gist, read:org, repo, workflow`, dan `GITHUB_TOKEN` dari
+Actions tidak boleh mengubah visibilitas paket (PATCH mengembalikan 404).
+Dua jalan keluar, keduanya butuh satu tindakan pemilik org:
+
+```bash
+# 1. tambah scope, lalu PATCH lewat API
+gh auth refresh -s write:packages,read:packages
+for p in route route-tools place; do
+  gh api -X PATCH orgs/nusapeta/packages/container/$p -f visibility=public
+done
+```
+
+atau buka `https://github.com/orgs/nusapeta/packages` → pilih tiap paket →
+Package settings → Change visibility → Public.
+
+Verifikasi setelahnya: token anonim untuk `nusapeta/route:pull` harus lebih
+panjang dari 4 karakter dan manifest anonim harus `200`.
 
 ---
 
