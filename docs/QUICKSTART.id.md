@@ -63,8 +63,8 @@ docker compose up -d --wait
 Bangun image lokal dari repo engine:
 
 ```bash
-(cd ../routeid && docker build -t nusapeta/route:local .)
-(cd ../placeid && docker build -t nusapeta/place:local .)
+(cd ../route && docker build -t nusapeta/route:local .)
+(cd ../place && docker build -t nusapeta/place:local .)
 ```
 
 ## 6. Berhenti
