@@ -793,11 +793,15 @@ history.
 
 ### 8.2 Aset peluncuran
 
-- [ ] Social preview 1280×640 untuk tiap repo
-- [ ] Repo topics: `openstreetmap`, `routing`, `geocoding`, `indonesia`,
-      `self-hosted`, `low-memory`, `mmap`, `golang`, `rust`
-- [ ] Badge: build, release, image size, license, data ODbL
-- [ ] `CITATION.cff` di kedua repo (untuk paper)
+- [ ] Social preview 1280×640 untuk tiap repo (hanya lewat UI GitHub; tidak
+      ada endpoint API untuk mengunggahnya)
+- [x] Repo topics: `openstreetmap`, `routing`, `geocoding`, `indonesia`,
+      `self-hosted`, `low-memory`, `mmap`, `golang`, `rust` (route: 7 topik,
+      place: 7, stack: 7)
+- [ ] Badge: build, release, image size, license, data ODbL (build ✅ di
+      ketiga README; license + data ODbL + status sudah ada; badge rilis dan
+      ukuran image belum)
+- [ ] `CITATION.cff` di kedua repo (untuk paper) — diparkir bersama paper
 - [ ] Satu GIF 10 detik: `docker compose up` → peta → rute → cari "monas"
 
 ### 8.3 Ekspektasi yang dipasang di depan
