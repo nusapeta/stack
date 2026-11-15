@@ -23,26 +23,27 @@ Diperbarui 2026-11-15 12:50 UTC.
 | 1 Artefak | selesai lokal | `~/Projects/artifacts/{route,place}-data-2026.11`; `sha256sum -c` dan `zstd -t` lolos |
 | 2 Stack | selesai | `nusapeta/stack`; e2e 9/9 pada fixture Jakarta, artefak Java asli, dan data rilis nasional; CI `43715547736` hijau (`3304ac4`, 1 m 38 s dengan cache; sebelumnya `43712394705`, `43707544284`, `43711103633`) |
 | 3 Dokumen publik | selesai kode | README EN + `docs/en/{QUICKSTART,API,ARCHITECTURE}.md` di kedua repo; CI route hijau |
-| 4 Peluncuran | berjalan | org `nusapeta` ada; route + place publik; stack dibuat dan CI-nya hijau; tag `v0.1.0` + `data-2026.11` terunggah dan diunduh anonim (route 5/5 + 8/8, place 3/3 + 8/8); satu-satunya yang terbuka: paket GHCR publik |
+| 4 Peluncuran | selesai | org `nusapeta` ada; route + place publik; stack dibuat dan CI-nya hijau; tag `v0.1.0` + `data-2026.11` terunggah dan diunduh anonim (route 5/5 + 8/8, place 3/3 + 8/8); image ghcr `route` + `place` publik dan tarik anonim berhasil |
 
-Blocker yang tersisa: paket GHCR masih privat. Sesi ini sudah memegang scope
-`write:packages` (dikonfirmasi `gh auth status`) dan pengguna adalah `admin`
-org, tetapi REST tetap menolak: `GET /orgs/nusapeta/packages/container/route`
-bekerja (paket tertaut ke `nusapeta/route`, tag `0.1.0` + `latest`), sedangkan
-`PATCH /orgs/nusapeta/packages/container/route -f visibility=public`
-mengembalikan `404 Not Found` untuk ketiga paket. Ini batasan GitHub, bukan
-scope: tidak ada endpoint REST untuk mengubah visibilitas paket container
-milik organisasi (lihat jawaban Stack Overflow 77092191 dan isu
-OpenCTI-Platform/connectors#5985). Satu-satunya jalan adalah UI:
+Status GHCR (2026-11-15 13:23 UTC): `route` dan `place` sudah publik. Bukti
+anonim: token pull 52 karakter, manifest `0.1.0` dan `latest` HTTP `200` untuk
+keduanya, `docker pull` tanpa kredensial berhasil (route 36,8 MB, place
+147,5 MB, keduanya `User=65532:65532`), lalu `docker compose pull` +
+`docker compose up -d --wait` dari image publik menjalankan
+`scripts/e2e.sh` 9/9 hijau pada 13:24 UTC. `route-tools` sengaja tetap
+privat: image itu hanya dipakai job CI `tools-image`, tidak dirujuk
+`compose.yml`.
 
-`https://github.com/orgs/nusapeta/packages` → pilih tiap paket →
-Package settings → Change visibility → Public → ketik nama paket.
-
-Halaman langsung per paket:
-`https://github.com/orgs/nusapeta/packages/container/{route,route-tools,place}/settings`
-
-Verifikasi setelahnya: token anonim untuk `nusapeta/route:pull` harus lebih
-panjang dari 4 karakter dan manifest anonim harus `200`.
+Catatan proses: GitHub tidak menyediakan endpoint REST untuk mengubah
+visibilitas paket container milik organisasi. `GET
+/orgs/nusapeta/packages/container/route` mengembalikan 200 (tertaut ke
+`nusapeta/route`, tag `0.1.0` + `latest`), tetapi `PATCH` dengan body
+`visibility=public` mengembalikan `404` meski token memegang
+`write:packages` dan pengguna `admin` org; GraphQL hanya punya
+`deletePackageVersion` (Stack Overflow 77092191,
+OpenCTI-Platform/connectors#5985). Perubahan visibilitas selalu lewat UI:
+`https://github.com/orgs/nusapeta/packages/container/package/<paket>/settings`
+→ Danger Zone → Change visibility.
 
 ---
 
@@ -118,7 +119,7 @@ Status per 2026-11-15 12:45 UTC; CI mengacu ke commit terakhir di `main`.
 | Deskripsi / topik / homepage | ✅ terisi | ✅ terisi | terisi |
 | Tag / release | ✅ `v0.1.0` (5 aset) + `data-2026.11` (8 aset) | ✅ `v0.1.0` (3 aset) + `data-2026.11` (8 aset) | `v0.1.0` |
 | Artefak siap pakai | ✅ 8/8 aset, `sha256sum -c` anonim lolos | ✅ 8/8 aset, `sha256sum -c` anonim lolos | 1 release data |
-| Image publik (ghcr) | ⏳ dibuat 2026-11-15, tag `0.1.0` + `latest`; manifest `0.1.0` terverifikasi multi-arch `linux/amd64` + `linux/arm64` dan config `User=65532:65532` (13:11 UTC); paket masih privat | ⏳ dibuat 2026-11-15, tag `0.1.0` + `latest`; manifest `0.1.0` terverifikasi multi-arch `linux/amd64` + `linux/arm64` dan config `User=65532:65532` (13:11 UTC); paket masih privat | multi-arch |
+| Image publik (ghcr) | ✅ publik 13:23 UTC; anonim: token 52 char, manifest `0.1.0` + `latest` `200`, `docker pull` 36,8 MB, `User=65532:65532` | ✅ publik 13:23 UTC; anonim: token 52 char, manifest `0.1.0` + `latest` `200`, `docker pull` 147,5 MB, `User=65532:65532` | multi-arch |
 | Infra pribadi di tree | ✅ disanitasi | ✅ disanitasi | disanitasi |
 | `CONTRIBUTING`/`SECURITY` | ✅ EN `8e9ea46` | ✅ EN `e4f30ae` | keduanya |
 | `CODE_OF_CONDUCT`, template issue | ✅ EN `8e9ea46` | ✅ EN `e4f30ae` | keduanya |
@@ -846,9 +847,11 @@ history.
       place: 7, stack: 7)
 - [x] Badge: build, release, license, data ODbL (2026-11-15: route + place,
       versi Inggris dan Indonesia; `img.shields.io/github/v/release/...`
-      menunjuk `releases/latest`). Badge ukuran image sengaja belum ada —
-      tidak ada endpoint publik untuk ukuran paket GHCR selama paket masih
-      privat
+      menunjuk `releases/latest`). Badge ukuran image sengaja belum ada:
+      GitHub tidak mengekspos ukuran paket GHCR lewat endpoint publik, dan
+      satu-satunya penyedia pihak ketiga (`ghcr-badge.egpl.dev`) tidak layak
+      dijadikan dependensi README. Ukuran dicatat sebagai angka di §3:
+      route 36,8 MB, place 147,5 MB
 - [ ] `CITATION.cff` di kedua repo (untuk paper) — diparkir bersama paper
 - [ ] Satu GIF 10 detik: `docker compose up` → peta → rute → cari "monas"
 
@@ -955,12 +958,11 @@ infra, `LICENSE-DATA`.
 - [x] `data-2026.11` berisi graph nasional, graph Jawa, index, manifest,
       `PROVENANCE.txt`, `LICENSE-DATA` (8/8 aset per repo, `sha256sum -c`
       anonim lolos)
-- [ ] Image ghcr multi-arch, jalan sebagai non-root (image sudah dibuat dan
-      dipush `0.1.0` + `latest`; manifest `0.1.0` sudah diperiksa lewat
-      registry API: `linux/amd64` + `linux/arm64`, config `User=65532:65532`
-      untuk route dan place. Paket masih privat karena GitHub tidak
-      menyediakan endpoint REST untuk visibilitas paket container org —
-      butuh satu klik UI)
+- [x] Image ghcr multi-arch, jalan sebagai non-root, tarik anonim: manifest
+      `0.1.0` + `latest` `200` lewat registry API (`linux/amd64` +
+      `linux/arm64`, `User=65532:65532`), `docker pull` tanpa kredensial
+      berhasil (route 36,8 MB, place 147,5 MB), dan `docker compose` yang
+      menarik image publik menjalankan `scripts/e2e.sh` 9/9 hijau (13:24 UTC)
 - [x] `nusapeta/stack`: `docker compose up` → peta + rute + pencarian < 5 menit
       (data rilis sudah di disk: `docker compose up -d --wait` 6,4 s sampai
       semua container healthy, lalu `scripts/e2e.sh` 9/9; CI `43707544284`
