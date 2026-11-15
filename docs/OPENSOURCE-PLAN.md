@@ -281,7 +281,7 @@ jalankan setelah file komunitas masuk, sebelum flip visibility.
 ```bash
 # metadata: tanpa ini repo tidak muncul di pencarian maupun topic
 gh repo edit nusapeta/route \
-  --description "Memory-mapped OSM router for Indonesia: one binary, one graph file, ~11 MB idle" \
+  --description "Memory-mapped OSM router for Indonesia: one binary, one graph file, ~17 MB idle" \
   --homepage "https://route.arifsani.xyz" \
   --add-topic openstreetmap --add-topic routing --add-topic indonesia \
   --add-topic self-hosted --add-topic golang --add-topic low-memory --add-topic mmap
