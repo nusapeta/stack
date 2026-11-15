@@ -860,6 +860,9 @@ history.
       route 36,8 MB, place 147,5 MB
 - [ ] `CITATION.cff` di kedua repo (untuk paper) — diparkir bersama paper
 - [ ] Satu GIF 10 detik: `docker compose up` → peta → rute → cari "monas"
+      (butuh perekaman layar GUI — OBS atau `asciinema` + `agg` dengan
+      browser; sesi ini tidak punya perekam maupun browser yang bisa
+      dikendalikan, jadi aset ini tetap di tangan manusia)
 
 ### 8.3 Ekspektasi yang dipasang di depan
 
