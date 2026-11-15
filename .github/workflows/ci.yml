@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v4
       - uses: actions/checkout@v4
         with:
           repository: nusapeta/route
@@ -26,9 +27,21 @@ jobs:
           repository: nusapeta/place
           path: engines/place
       - name: Build engine images
-        run: |
-          docker build -t nusapeta/route:ci engines/route
-          docker build -t nusapeta/place:ci engines/place
+        uses: docker/build-push-action@v7
+        with:
+          context: engines/route
+          load: true
+          tags: nusapeta/route:ci
+          cache-from: type=gha,scope=stack-route
+          cache-to: type=gha,mode=max,scope=stack-route
+      - name: Build place image
+        uses: docker/build-push-action@v7
+        with:
+          context: engines/place
+          load: true
+          tags: nusapeta/place:ci
+          cache-from: type=gha,scope=stack-place
+          cache-to: type=gha,mode=max,scope=stack-place
       - name: Compose with fixtures
         env:
           DATA_DIR: ./data
