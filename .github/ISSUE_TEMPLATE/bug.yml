@@ -1,0 +1,44 @@
+name: Bug report
+description: Compose, bootstrap, or gateway behavior is wrong
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not report vulnerabilities here. Read `SECURITY.md`.
+        Engine-specific bugs belong in the route or place repository.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Command, output, status code, and error message.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: input
+    id: command
+    attributes:
+      label: Command
+      description: Exact Compose or script command.
+      placeholder: scripts/bootstrap.sh --fixtures
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Docker version, stack commit, image tags, and `.env` values with secrets removed.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Related output from `docker compose logs` or the script.
+      render: text

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Quick start
+    url: https://github.com/nusapeta/stack/blob/main/docs/QUICKSTART.md
+    about: Install, bootstrap, run, and verify the stack.
+  - name: Architecture
+    url: https://github.com/nusapeta/stack/blob/main/docs/ARCHITECTURE.md
+    about: Service boundaries, ports, data flow, and memory budget.
+  - name: Vulnerabilities
+    url: https://github.com/nusapeta/stack/security/advisories/new
+    about: Report through a private advisory, not a public issue.

@@ -28,6 +28,9 @@ check() { # name status expected [jq-filter]
 tmp=$(mktemp)
 trap 'rm -f "$tmp"' EXIT
 
+status=$(curl -sS -o "$tmp" -w '%{http_code}' "$base/")
+check "map page" "$status" 200
+
 status=$(curl -sS -o "$tmp" -w '%{http_code}' "$base/healthz")
 check "route health" "$status" 200 \
   '.ok == true and .profiles.mobil.upstream.regions[0].format == 5 and .profiles.motor.upstream.ok == true'

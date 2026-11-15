@@ -1,0 +1,43 @@
+name: Feature request
+description: New stack capability or behavior change
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Keep engine features in the route or place repository. This repository
+        covers Compose, bootstrap, gateway wiring, examples, and contract tests.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Who is blocked, and in what situation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Desired behavior and the services or scripts involved.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Other approaches you considered.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - compose
+        - bootstrap or data
+        - gateway
+        - examples
+        - documentation
+        - CI
+        - other
+    validations:
+      required: true
