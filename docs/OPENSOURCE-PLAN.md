@@ -728,14 +728,15 @@ yang sama, lalu quick start artefak rilis. Angka yang dipakai:
 | 17 MB (±) | route, place, stack | turunan 11,1 MB + 6,15 MiB |
 | 1,6 GB | route, stack | `/healthz` produksi |
 | 142 MB | place, stack | index 141.997.032 B |
-| 228 s / 288 s | place, stack | NFR-006 median 228,42 s; build rilis 288 s |
+| 228 s | place, stack | NFR-006 median 228,42 s (`docs/BENCHMARKS.md`, `docs/research/P4-EVIDENCE.md` P5-05) |
 
-Dua angka build yang beredar bukan kontradiksi: 228,42 s adalah median benchmark
-NFR-006 (`docs/BENCHMARKS.md`), 288 s adalah build yang menghasilkan index
-`data-2026.11` (`PROVENANCE.txt`, `built_at` 2026-11-15T07:03:33Z). README dan
-QUICKSTART sekarang menulis rentang `228–288 s` dengan sumber masing-masing.
-Dokumen rilis (`docs/BENCHMARKS.md`, `docs/research/*`, `docs/releases/0.1.0.md`)
-tidak disentuh. Commit: route `5314b9f`, place `0311f2a`, stack `6671cb9`.
+Satu angka build saja yang punya bukti: 228,42 s. Index yang dirilis identik
+byte demi byte dengan build itu (`a732b4ec…836d`), tapi wall time build ulang
+2026-11-15 tidak pernah dicatat, sedangkan `PROVENANCE.txt` sempat memuat angka
+288 s dan rincian fase yang tidak cocok dengan build mana pun di
+`docs/research/*`. Angka itu dihapus dari `PROVENANCE.txt`; yang tersisa adalah
+228,42 s + puncak RSS 8.189.128 KiB. Commit: route `5314b9f`, place `0311f2a`,
+stack `6671cb9`.
 
 ### 7.3 Anti-slop pass
 
