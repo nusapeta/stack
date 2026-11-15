@@ -539,7 +539,7 @@ tiap sel memakai `docker/build-push-action@v7` dengan
 dengan isi image (QEMU hanya untuk build arm64), lalu memaketkan `nusa-place` +
 `nusa-place-build` + `README.md` + `LICENSE` + `LICENSE-DATA` menjadi
 `nusapeta-place_<versi>_<target>.tar.gz`. Job `release` mengunduh kedua artefak,
-menulis `SHA256SUMS`, dan memakai `softprops/action-gh-release@v2`. Job `image`
+menulis `SHA256SUMS`, dan memakai `softprops/action-gh-release@v3`. Job `image`
 terpisah membangun `ghcr.io/nusapeta/place` multi-arch. Cache `type=gha` dengan
 scope per target.
 
