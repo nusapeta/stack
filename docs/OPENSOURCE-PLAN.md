@@ -21,7 +21,7 @@ Diperbarui 2026-11-15 07:35 UTC.
 |---|---|---|
 | 0 Higiene | selesai | route `5705e4d`, `b289cea`, `962adc4`, `baf3a9a`, `8e9ea46`; place `087ca0f`, `225b2f7`, `e13eb60`, `32add6e`, `e4f30ae` |
 | 1 Artefak | selesai lokal | `~/Projects/artifacts/{route,place}-data-2026.11`; `sha256sum -c` dan `zstd -t` lolos |
-| 2 Stack | selesai | `~/Projects/stack` `3e8adc4`; e2e 9/9 pada fixture Jakarta dan artefak Java asli |
+| 2 Stack | selesai | `~/Projects/stack` `3e8adc4` (kode), `3fe08fd` (dokumen); e2e 9/9 pada fixture Jakarta dan artefak Java asli |
 | 3 Dokumen publik | selesai kode | README EN + `docs/en/{QUICKSTART,API,ARCHITECTURE}.md` di kedua repo; CI route hijau |
 | 4 Peluncuran | tertahan | org `nusapeta` belum ada; transfer, tag, release, image publik, dan flip visibility belum bisa |
 
@@ -99,7 +99,7 @@ Status per 2026-11-15 07:35 UTC; CI mengacu ke commit terakhir di `main`.
 | Item | nusapeta/route | nusapeta/place | Target |
 |---|---|---|---|
 | Kode terbaca, test ada | ✅ 104 test, golden | ✅ 47 test | pertahankan |
-| CI build + test | ✅ 2/2 hijau, 53 s (`8e9ea46`) | ⏳ `docs` + `rust` hijau; `arm64` berjalan (`e4f30ae`) | hijau |
+| CI build + test | ✅ 2/2 hijau, 53 s (`a5b4367`) | ✅ `docs` + `rust` hijau; `arm64` hanya jalan di `main` (`273b296`) | hijau |
 | Repo publik | ❌ privat, menunggu org | ❌ privat, menunggu org | publik |
 | Deskripsi / topik / homepage | ⏳ setelah transfer | ⏳ setelah transfer | terisi |
 | Tag / release | ❌ | ❌ | `v0.1.0` |
@@ -123,11 +123,11 @@ terkini. Temuan yang sudah diperbaiki ditandai.
 | Deskripsi, homepage, topics | kosong | kosong | repositori tidak muncul di pencarian/topik sebelum org ada |
 | License terdeteksi | MIT | MIT | aman, badge akan muncul saat publik |
 | Release / tag | 0 | 0 | belum ada jalur unduh |
-| CI terakhir | ✅ 2/2 hijau (`8e9ea46`) | ⏳ run `43690949548`; `docs` + `rust` hijau, `arm64` berjalan | dicek ulang setelah org ada |
+| CI terakhir | ✅ 2/2 hijau (`a5b4367`) | ✅ `docs` + `rust` hijau (`273b296`); `arm64` dipindah ke `push` saja | dicek ulang setelah org ada |
 | Branch protection | ❌ 403 | ❌ 403 | "Upgrade to GitHub Pro or make this repository public" — terkunci oleh visibilitas |
-| Dependabot alerts | ❌ belum aktif | ❌ belum aktif | aktifkan setelah transfer |
-| `delete_branch_on_merge` | `false` | `false` | ada 2 branch mati dari PR merged |
-| `has_projects` | `true` | `true` | tab kosong di repo publik |
+| Dependabot alerts | ✅ aktif 2026-11-15 | ✅ aktif 2026-11-15 | aktifkan setelah transfer |
+| `delete_branch_on_merge` | ✅ aktif | ✅ aktif | ada 2 branch mati dari PR merged |
+| `has_projects` | ✅ mati | ✅ mati | tab kosong di repo publik |
 | Discussions / wiki | mati | mati | keputusan sadar, biarkan |
 | Default workflow permissions | `read` | `read` | ✅ aman |
 | Local vs `origin/main` | ✅ sync (`baf3a9a`) | ✅ sync (`32add6e`) | — |
@@ -294,7 +294,8 @@ gh repo edit nusapeta/place \
   --add-topic openstreetmap --add-topic geocoding --add-topic indonesia \
   --add-topic self-hosted --add-topic rust --add-topic low-memory --add-topic reverse-geocoding
 
-# higiene merge: gh 2.103 tidak punya flag --disable-*, jadi lewat API
+# higiene merge: sudah dijalankan 2026-11-15 pada arifsans/routeid + placeid;
+# setelan ini ikut saat rename/transfer
 for r in route place; do
   gh repo edit nusapeta/$r --enable-squash-merge --delete-branch-on-merge --enable-issues
   gh api -X PATCH repos/nusapeta/$r \
@@ -302,12 +303,10 @@ for r in route place; do
     -F has_wiki=false -F has_projects=false
 done
 
-# branch mati dari PR yang sudah merged (hanya nusapeta/route)
-gh api -X DELETE repos/nusapeta/route/git/refs/heads/code/antislop-audit-002
-gh api -X DELETE repos/nusapeta/route/git/refs/heads/docs/antislop-audit-001
+# branch mati code/antislop-audit-002 dan docs/antislop-audit-001
+# sudah dihapus 2026-11-15; tidak ada perintah tersisa.
 
-# Dependabot alerts (sekarang 404 = belum aktif)
-for r in route place; do gh api -X PUT repos/nusapeta/$r/vulnerability-alerts; done
+# Dependabot alerts: sudah aktif di kedua repo 2026-11-15.
 ```
 
 Setelah repo publik (urutan ada di §8.1), aktifkan hal yang terkunci oleh
@@ -431,6 +430,11 @@ komentar bahwa NFR-007 diukur di QEMU sehingga performa tidak diklaim;
 (b) `cargo deny check licenses` karena `docs/DEPENDENCIES.md` sudah menjanjikan
 audit lisensi tapi CI belum menegakkannya.
 
+Catatan hasil: build Rust `--release` di bawah QEMU butuh ~50 menit, jadi job
+`arm64` dibatasi ke `push` di `main` (`if: github.event_name != 'pull_request'`)
+plus cache layer `type=gha`. Workflow `release` tetap membangun `linux/arm64`,
+jadi regresi arm64 tertangkap sebelum tag tanpa membebani tiap PR.
+
 **P0.6 File komunitas.** `CODE_OF_CONDUCT.md`, issue template, PR template,
 `CHANGELOG.md` (0.1.0), `dependabot.yml` (`cargo` + actions + docker).
 
@@ -440,12 +444,12 @@ audit lisensi tapi CI belum menegakkannya.
 - [x] `rg 'arifsani|192\.168\.'` bersih di file non-lisensi (`baf3a9a`)
 - [x] `nusapeta/place` tidak lagi punya file `.pyc` ter-track
 - [x] `LICENSE-DATA` ada di kedua repo
-- [ ] CI nusapeta/place hijau, plus job baru di kedua repo — `docs` + `rust` hijau; `arm64` berjalan (`e4f30ae`); route hijau 53 s (`8e9ea46`)
+- [x] CI nusapeta/place hijau, plus job baru di kedua repo — route 2/2 hijau 53 s (`a5b4367`); place `docs` + `rust` hijau, `arm64` dipindah ke `push` saja karena ~50 menit di QEMU (`273b296`)
 - [x] `.cargo/audit.toml` memuat ignore `RUSTSEC-2026-0186` + justifikasi
 - [ ] Deskripsi, homepage, topics terisi di kedua repo — tertahan org
-- [ ] Squash-only, delete-branch-on-merge, projects mati — tertahan org
-- [ ] Dependabot alerts aktif di kedua repo — tertahan org
-- [ ] Branch `code/antislop-audit-002` dan `docs/antislop-audit-001` dihapus — menunggu transfer
+- [x] Squash-only, delete-branch-on-merge, projects mati — `2026-11-15`
+- [x] Dependabot alerts aktif di kedua repo — `2026-11-15`
+- [x] Branch `code/antislop-audit-002` dan `docs/antislop-audit-001` dihapus — `2026-11-15`
 - [x] Semua tautan relatif di `docs/` valid
 - [x] Berkas bukti beku menunjuk padanan nama lama → baru (`paper/README.md`)
 - [ ] Demo produksi jalan dengan nama baru; metrik `nusa_*` ter-scrape — route 200; place saat ini 404, tidak di-restart tanpa persetujuan
@@ -566,7 +570,7 @@ atas tetap terbuka karena belum ada URL rilis publik.
 ## 6. Fase 2 — Repo `nusapeta/stack` (Hari 10–16)
 
 **Status 2026-11-15: selesai dan teruji.** Repo lokal `~/Projects/stack`
-(`e64a527`, `3e8adc4`). e2e lulus 9/9 pada dua jalur: fixture Jakarta dan
+(`e64a527`, `3e8adc4`, `3fe08fd`). e2e lulus 9/9 pada dua jalur: fixture Jakarta dan
 artefak Java asli (`java.graph` 693 MB + index 142 MB) yang diunduh lewat
 `bootstrap.sh` dari mirror lokal. Bootstrap rilis memverifikasi `.sha256`,
 `--fixtures` memverifikasi `testdata/SHA256SUMS`. Image lokal:
