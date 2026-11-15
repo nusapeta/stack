@@ -7,6 +7,11 @@ The two engines are [nusapeta/route](https://github.com/nusapeta/route) and
 [nusapeta/place](https://github.com/nusapeta/place). This repository is the
 compose bundle: two route profiles, one gateway, no build step on the host.
 
+[![CI](https://github.com/nusapeta/stack/actions/workflows/ci.yml/badge.svg)](https://github.com/nusapeta/stack/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Data](https://img.shields.io/badge/data-ODbL-green)](https://www.openstreetmap.org/copyright)
+[![Status](https://img.shields.io/badge/status-research%20preview-orange)](#security-and-limits)
+
 | Metric | Value |
 |---|---:|
 | Idle RSS, whole stack | **47 MiB** (48,480 kB), four processes |
