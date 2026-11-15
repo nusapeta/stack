@@ -109,15 +109,15 @@ satunya langkah yang tidak bisa diotomasi.
 
 ## 3. Skor kesiapan
 
-Status per 2026-11-15 12:05 UTC; CI mengacu ke commit terakhir di `main`.
+Status per 2026-11-15 12:45 UTC; CI mengacu ke commit terakhir di `main`.
 
 | Item | nusapeta/route | nusapeta/place | Target |
 |---|---|---|---|
 | Kode terbaca, test ada | ✅ 104 test, golden | ✅ 47 test | pertahankan |
-| CI build + test | ✅ 2/2 hijau, 46 s (`81ec70b`, run `43714144943`) | ✅ 3/3 hijau, 29 m (`263b53c`, run `43711875214`; `arm64` 28 m 55 s di QEMU) | hijau |
+| CI build + test | ✅ 2/2 hijau, 46 s (`81ec70b`, run `43714144943`) | ✅ 3/3 hijau (`26e1189`, run `43714572288`, 33 s dengan cache; run dingin `43711875214` 29 m, `arm64` 28 m 55 s) | hijau |
 | Repo publik | ✅ publik 2026-11-15 | ✅ publik 2026-11-15 | publik |
 | Deskripsi / topik / homepage | ✅ terisi | ✅ terisi | terisi |
-| Tag / release | ✅ `v0.1.0` + `data-2026.11`, 12 aset | ⏳ `v0.1.0` di-push; release berjalan | `v0.1.0` |
+| Tag / release | ✅ `v0.1.0` (5 aset) + `data-2026.11` (8 aset) | ✅ `v0.1.0` (3 aset) + `data-2026.11` (8 aset) | `v0.1.0` |
 | Artefak siap pakai | ✅ 8/8 aset, `sha256sum -c` anonim lolos | ✅ 8/8 aset, `sha256sum -c` anonim lolos | 1 release data |
 | Image publik (ghcr) | ⏳ dibuat 2026-11-15; paket masih privat | ⏳ dibuat 2026-11-15; paket masih privat | multi-arch |
 | Infra pribadi di tree | ✅ disanitasi | ✅ disanitasi | disanitasi |
@@ -562,7 +562,10 @@ scope per target.
 
 Verifikasi 2026-11-15: `docker build --output type=local,dest=/tmp/place-rootfs .`
 menghasilkan `/tmp/place-rootfs/usr/local/bin/{nusa-place,nusa-place-build}`,
-keduanya melaporkan `0.1.0`; `--verify-checksum` ada di `--help`.
+keduanya melaporkan `0.1.0`; `--verify-checksum` ada di `--help`. Workflow
+`release` untuk tag `v0.1.0` (run `43711885137`) selesai dengan body dari
+`docs/releases/v0.1.0.en.md` dan tiga aset; pengunduhan anonim plus
+`sha256sum -c` lolos.
 
 Catatan terukur: `GOOS=darwin GOARCH=arm64 go build -o /tmp/nusa-bin/ ./cmd/...`
 sudah diuji dan berhasil (mmap memakai `syscall.Mmap` yang ada di Linux dan
@@ -617,8 +620,10 @@ curl -fsS 'http://127.0.0.1:8090/search?q=monas&limit=1'
       `/search?q=monas` 200 (diuji di dalam image `0.1.0` dengan index rilis)
 - [x] Image total < 40 MB (nusapeta/route) dan berjalan sebagai UID 65532,
       root read-only (36,7 MB; `docker run --read-only` tetap 200 di `/healthz`)
-- [x] Release body memuat atribusi ODbL dan tautan `LICENSE-DATA` (route;
-      place menyusul saat release-nya selesai)
+- [x] Release body memuat atribusi ODbL dan tautan `LICENSE-DATA` (route
+      `v0.1.0` 5 aset, place `v0.1.0` 3 aset, keduanya diunduh anonim dan
+      lolos `sha256sum -c`; tarball place `x86_64` diuji: `nusa-place --help`
+      jalan)
 
 Status 2026-11-15: `sha256sum -c` dan `zstd -t` lolos untuk graph nasional,
 graph Jawa, dan index place. URL rilis publik sekarang ada dan diuji anonim:
@@ -930,15 +935,18 @@ infra, `LICENSE-DATA`.
 ## 12. Definition of done `v0.1.0`
 
 - [x] Tiga repo publik, tanpa path/domain pribadi
-- [ ] `git tag v0.1.0` + GitHub Release berisi binary, checksum, changelog
-      (route ✅ 5 aset; place ⏳ workflow rilis berjalan)
+- [x] `git tag v0.1.0` + GitHub Release berisi binary, checksum, changelog
+      (route 5 aset, place 3 aset: dua tarball `linux/amd64` + `linux/arm64`
+      dan `SHA256SUMS`; keduanya diunduh anonim, checksum lolos)
 - [x] `data-2026.11` berisi graph nasional, graph Jawa, index, manifest,
       `PROVENANCE.txt`, `LICENSE-DATA` (8/8 aset per repo, `sha256sum -c`
       anonim lolos)
 - [ ] Image ghcr multi-arch, jalan sebagai non-root (image sudah dibuat;
       paket masih privat, menunggu scope `write:packages`)
 - [x] `nusapeta/stack`: `docker compose up` → peta + rute + pencarian < 5 menit
-      (CI `43707544284`: build 2 image + compose + e2e dalam 6m36s)
+      (data rilis sudah di disk: `docker compose up -d --wait` 6,4 s sampai
+      semua container healthy, lalu `scripts/e2e.sh` 9/9; CI `43707544284`
+      membangun 2 image + compose + e2e dalam 6m36s)
 - [x] `scripts/e2e.sh` hijau di mesin bersih (runner ubuntu-24.04 kosong,
       9/9, bukan mesin pengembang)
 - [x] README EN memuat positioning, 4 angka, quick start rilis, batasan,
