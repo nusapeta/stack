@@ -545,11 +545,27 @@ Uji di mesin bersih (VM atau container baru, tanpa cache):
 mkdir -p /tmp/try && cd /tmp/try
 curl -fsSLO <release-url>/indonesia-v5-2026.11.graph.zst
 curl -fsSLO <release-url>/indonesia-v5-2026.11.graph.zst.sha256
-sha256sum -c *.sha256
-zstd -d indonesia-v5-2026.11.graph.zst
-docker run --rm -p 8080:8080 -v $PWD:/data:ro ghcr.io/nusapeta/route:0.1.0 \
+sha256sum -c indonesia-v5-2026.11.graph.zst.sha256
+zstd -d indonesia-v5-2026.11.graph.zst -o indonesia-v5-2026.11.graph
+docker run --rm -p 127.0.0.1:8080:8080 -v "$PWD:/data:ro" \
+  ghcr.io/nusapeta/route:0.1.0 \
   -graph /data/indonesia-v5-2026.11.graph -addr :8080
-curl -fsS '127.0.0.1:8080/healthz' | jq '.graph.node_count, .graph.format_version'
+curl -fsS 'http://127.0.0.1:8080/healthz' | jq '.regions[0] | {format, nodes, edges, pbf_sha256, built_at}'
+curl -fsS 'http://127.0.0.1:8080/version' | jq -r '.commit'
+```
+
+Place memakai nama aset bertanggal, bukan `places.idx`:
+
+```bash
+curl -fsSLO <place-release-url>/places-2026.11.idx
+curl -fsSLO <place-release-url>/places-2026.11.idx.json
+curl -fsSLO <place-release-url>/places-2026.11.idx.sha256
+sha256sum -c places-2026.11.idx.sha256
+docker run --rm -p 127.0.0.1:8090:8090 -v "$PWD:/data:ro" \
+  ghcr.io/nusapeta/place:0.1.0 \
+  --index /data/places-2026.11.idx --manifest /data/places-2026.11.idx.json \
+  --verify-checksum
+curl -fsS 'http://127.0.0.1:8090/search?q=monas&limit=1'
 ```
 
 - [ ] Unduh → `healthz` 200 di bawah 5 menit di mesin bersih
@@ -570,15 +586,22 @@ atas tetap terbuka karena belum ada URL rilis publik.
 ## 6. Fase 2 — Repo `nusapeta/stack` (Hari 10–16)
 
 **Status 2026-11-15: selesai dan teruji.** Repo lokal `~/Projects/stack`
-(`e64a527`, `3e8adc4`, `3fe08fd`). e2e lulus 9/9 pada dua jalur: fixture Jakarta dan
+(`e64a527`, `3e8adc4`, `3fe08fd`, lalu `6600439`, `1bb3f71`, `35d01f8`,
+`4f60e9b`). e2e lulus 9/9 pada dua jalur: fixture Jakarta dan
 artefak Java asli (`java.graph` 693 MB + index 142 MB) yang diunduh lewat
 `bootstrap.sh` dari mirror lokal. Bootstrap rilis memverifikasi `.sha256`,
 `--fixtures` memverifikasi `testdata/SHA256SUMS`. Image lokal:
 `nusapeta/route:local` 36,7 MB, `nusapeta/place:local` 147 MB, keduanya
-UID 65532. Workflow `.github/workflows/ci.yml` sudah dianalisis dan YAML-nya
-valid, tetapi belum pernah berjalan di GitHub karena repo ini belum punya
-remote; setelah org ada, push lalu jalankan workflow itu. Dokumen rencana ini
-disalin ke `docs/OPENSOURCE-PLAN.md` dan ikut di-commit di repo yang sama.
+UID 65532; e2e diulang 9/9 dengan image hasil `docker buildx build --load`
+(`nusapeta/route:ci` 35,0 MB, `nusapeta/place:ci`). Workflow
+`.github/workflows/ci.yml` sekarang memakai
+`docker/setup-buildx-action@v4` + dua langkah `docker/build-push-action@v7`
+dengan cache `type=gha` (scope `stack-route`, `stack-place`), YAML valid,
+tetapi belum pernah berjalan di GitHub karena repo ini belum punya remote;
+setelah org ada, push lalu jalankan workflow itu. `docs/SECURITY-MODEL.md`
+menjelaskan tiga jalur eksposur (tunnel, reverse proxy TLS, jaringan privat)
+dan biaya `-trust-proxy`. Dokumen rencana ini disalin ke
+`docs/OPENSOURCE-PLAN.md` dan ikut di-commit di repo yang sama.
 
 Catatan kontrak: `/healthz` gateway membungkus health upstream di
 `.profiles.{mobil,motor}.upstream.regions[0].format`, bukan field
@@ -764,6 +787,13 @@ bisa ditepati.
 di `ROADMAP.md`; gagal bila RSS idle > 32 MB, image > 40 MB, artefak > 2 GB,
 ekstraksi nasional > 10 menit. Jalankan manual sebelum rilis, **jangan** di CI
 (butuh graph nasional).
+
+**Status 2026-11-15: ada dan teruji.** `routeid/scripts/budget.sh` mencetak satu
+baris per metrik dengan verdict `ok`/`FAIL`/`skip`; metrik yang tidak terukur
+(tidak ada server, tidak ada PBF) tidak menggagalkan run. Opsi `--graph`,
+`--image`, `--pid`, `--pbf`, `--time-extract`. Bukti: image lokal 35,0 MB → `ok`;
+`nusapeta/place:local` 140,6 MB sebagai uji negatif → `FAIL` + exit 1; RSS live
+15,2 MB (graph Jawa) → `ok`.
 
 ### 9.4 Keamanan
 
