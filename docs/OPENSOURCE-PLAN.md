@@ -502,30 +502,45 @@ memakai `gh release upload` dengan `--clobber`.
 
 ### 5.2 Rilis kode
 
-**nusapeta/route** — `.goreleaser.yaml`:
+**nusapeta/route** — `.goreleaser.yaml` (isinya sudah sesuai file di repo):
 
 ```yaml
 version: 2
-builds:
-  - id: nusa-serve
-    main: ./cmd/nusa-serve
-  - id: nusa-extract
-    main: ./cmd/nusa-extract
-    env: [CGO_ENABLED=0]
-    goos: [linux, darwin]
-    goarch: [amd64, arm64]
-    ldflags: [-s, -w, -X main.commit={{.Commit}}, -X main.buildTime={{.Date}}]
+project_name: nusapeta-route
+before:
+  hooks: [go mod tidy]
+builds:            # lima binary, semuanya linux+darwin × amd64+arm64
+  - {id: nusa-serve,    main: ./cmd/nusa-serve}
+  - {id: nusa-gateway,  main: ./cmd/nusa-gateway}
+  - {id: nusa-extract,  main: ./cmd/nusa-extract}
+  - {id: nusa-route,    main: ./cmd/nusa-route}
+  - {id: nusa-graphinfo, main: ./cmd/nusa-graphinfo}
 archives:
   - formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 checksum:
-  name_template: checksums.txt
+  name_template: SHA256SUMS
 ```
 
-**nusapeta/place** — workflow `release.yml`: matrix `x86_64-unknown-linux-gnu` +
-`aarch64-unknown-linux-gnu`, build rootfs lewat Dockerfile (QEMU hanya untuk
-arm64), paketkan `nusa-place` + `nusa-place-build` + `README.md` + `LICENSE` +
-`LICENSE-DATA` menjadi `nusapeta-place_0.1.0_<target>.tar.gz`, lalu
-`SHA256SUMS`. Job image terpisah membangun `ghcr.io/nusapeta/place` multi-arch.
+Verifikasi 2026-11-15: `go run github.com/goreleaser/goreleaser/v2@v2.12.7 check`
+lolos; snapshot release selesai 36 s, empat arsip berisi `CHANGELOG.md`,
+`LICENSE`, `LICENSE-DATA`, `README.md`, `README.id.md`, dan lima binary;
+`dist/SHA256SUMS` memuat empat baris.
+
+**nusapeta/place** — workflow `release.yml`: matrix `linux/amd64`
+(`x86_64-unknown-linux-gnu`) + `linux/arm64` (`aarch64-unknown-linux-gnu`);
+tiap sel memakai `docker/build-push-action@v7` dengan
+`outputs: type=local,dest=$RUNNER_TEMP/rootfs` sehingga binary rilis identik
+dengan isi image (QEMU hanya untuk build arm64), lalu memaketkan `nusa-place` +
+`nusa-place-build` + `README.md` + `LICENSE` + `LICENSE-DATA` menjadi
+`nusapeta-place_<versi>_<target>.tar.gz`. Job `release` mengunduh kedua artefak,
+menulis `SHA256SUMS`, dan memakai `softprops/action-gh-release@v2`. Job `image`
+terpisah membangun `ghcr.io/nusapeta/place` multi-arch. Cache `type=gha` dengan
+scope per target.
+
+Verifikasi 2026-11-15: `docker build --output type=local,dest=/tmp/place-rootfs .`
+menghasilkan `/tmp/place-rootfs/usr/local/bin/{nusa-place,nusa-place-build}`,
+keduanya melaporkan `0.1.0`; `--verify-checksum` ada di `--help`.
 
 Catatan terukur: `GOOS=darwin GOARCH=arm64 go build -o /tmp/nusa-bin/ ./cmd/...`
 sudah diuji dan berhasil (mmap memakai `syscall.Mmap` yang ada di Linux dan
@@ -687,7 +702,10 @@ pada perintah reproduksi OSRM dengan `$USER` (`baf3a9a`).
 
 ### 7.2 Konten wajib di README EN
 
-1. Satu kalimat positioning + 4 angka (17 MB, 1,6 GB, 142 MB, 228 s).
+1. Satu kalimat positioning + 4 angka (17 MB, 1,6 GB, 142 MB, 228 s). Kalimat
+   positioning sama kata-katanya di tiga README; angka 142 MB dan 228 s hanya
+   masuk akal di `nusapeta/stack`, jadi tabel empat angka ada di sana dan tiap
+   README engine menyebut angka miliknya sendiri.
 2. Quick start 3 perintah memakai artefak rilis (bukan build dari PBF).
 3. Tabel perbandingan jujur vs OSRM/Nominatim (RSS, artefak, latency p50/p95)
    dengan kolom "siapa yang menang".
@@ -696,6 +714,21 @@ pada perintah reproduksi OSRM dengan `$USER` (`baf3a9a`).
 5. Disclaimer Nusapeta Place: bukan Google Place ID.
 6. Atribusi ODbL + tautan `LICENSE-DATA`.
 7. Tautan ke `paper/RESULTS.md` sebagai bukti, bukan klaim.
+
+**Status 2026-11-15: selesai.** Ketiga README membuka dengan kalimat positioning
+yang sama, lalu quick start artefak rilis. Angka yang dipakai:
+
+| Angka | Letak | Sumber |
+|---|---|---|
+| 17 MB (±) | route, place, stack | turunan 11,1 MB + 6,15 MiB |
+| 1,6 GB | route, stack | `/healthz` produksi |
+| 142 MB | place, stack | index 141.997.032 B |
+| 228 s | place, stack | NFR-006, `docs/BENCHMARKS.md` |
+
+Ditemukan saat pass ini: `placeid/docs/en/QUICKSTART.md` menulis 288 s untuk
+build nasional, sedangkan seluruh bukti tercatat 228,42 s. Diperbaiki di
+`0311f2a` (README place) dan commit yang sama untuk QUICKSTART. Commit: route
+`5314b9f`, place `0311f2a`, stack `6671cb9`.
 
 ### 7.3 Anti-slop pass
 
@@ -706,6 +739,14 @@ bawah tautan "read more".
 
 Hapus dari README publik: nama folder internal, riwayat audit, catatan
 homelab, path `/www/sites/...`, alamat IP.
+
+**Status 2026-11-15: selesai.** Ketiga README kini membuka dengan satu baris
+angka berisi titik (`·`), kalimat positioning, dan quick start artefak, lalu
+"Read more" dengan tautan anchor. Di bawah fold tetap ada tabel E1 penuh,
+arsitektur, dan operasi; setiap angka identik dengan `paper/RESULTS.md`.
+Blok quick start dipindah, bukan disalin, sehingga tiap README memuatnya tepat
+sekali (commit `5314b9f`, `0311f2a`, `6671cb9`). `check_links.py` (route, 30
+file) dan `check_consistency.py` (place, 39 file) tetap lolos.
 
 ---
 
