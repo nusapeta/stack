@@ -21,8 +21,23 @@ graph_name=indonesia.graph
 if [[ ${1:-} == --java ]]; then
   graph_asset=java-v5-2026.11.graph.zst
   graph_name=java.graph
+elif [[ ${1:-} == --fixtures ]]; then
+  fixture_dir=${FIXTURE_DIR:-./testdata}
+  mkdir -p "$data_dir"
+  (cd "$fixture_dir" && sha256sum -c SHA256SUMS)
+  install -m 0644 "$fixture_dir/java-mini.graph" "$data_dir/java-mini.graph"
+  install -m 0644 "$fixture_dir/mini.osm.pbf" "$data_dir/mini.osm.pbf"
+  install -m 0644 "$fixture_dir/places-mini.idx" "$data_dir/places-mini.idx"
+  install -m 0644 "$fixture_dir/places-mini.idx.json" "$data_dir/places-mini.idx.json"
+  cat <<EOF
+fixtures ready in $data_dir
+  graph      java-mini.graph
+  place      places-mini.idx (+ manifest)
+next: docker compose up -d --wait && scripts/e2e.sh
+EOF
+  exit 0
 elif [[ -n ${1:-} ]]; then
-  echo "usage: $0 [--java]" >&2
+  echo "usage: $0 [--java|--fixtures]" >&2
   exit 2
 fi
 

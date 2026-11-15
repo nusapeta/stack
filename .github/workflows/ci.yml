@@ -27,14 +27,16 @@ jobs:
           docker build -t nusapeta/place:ci engines/place
       - name: Compose with fixtures
         env:
-          DATA_DIR: ./testdata
+          DATA_DIR: ./data
           NUSAPETA_PORT: "8080"
           NUSAPETA_ROUTE_GRAPH: java-mini.graph
           NUSAPETA_PLACE_INDEX: places-mini.idx
           NUSAPETA_PLACE_MANIFEST: places-mini.idx.json
           NUSAPETA_ROUTE_IMAGE: nusapeta/route:ci
           NUSAPETA_PLACE_IMAGE: nusapeta/place:ci
-        run: docker compose up -d --wait
+        run: |
+          scripts/bootstrap.sh --fixtures
+          docker compose up -d --wait
       - name: Contract test
         run: BASE_URL=http://127.0.0.1:8080 scripts/e2e.sh
       - name: Logs on failure

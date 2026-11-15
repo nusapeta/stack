@@ -47,7 +47,8 @@ Committed fixtures exercise the same Compose contract without downloading a
 release:
 
 ```bash
-DATA_DIR=./testdata \
+scripts/bootstrap.sh --fixtures
+DATA_DIR=./data \
 NUSAPETA_ROUTE_GRAPH=java-mini.graph \
 NUSAPETA_PLACE_INDEX=places-mini.idx \
 NUSAPETA_PLACE_MANIFEST=places-mini.idx.json \
@@ -55,6 +56,8 @@ NUSAPETA_ROUTE_IMAGE=nusapeta/route:local \
 NUSAPETA_PLACE_IMAGE=nusapeta/place:local \
 docker compose up -d --wait
 ```
+
+`--fixtures` verifies `testdata/SHA256SUMS` before staging the files.
 
 Build the local images from the engine repositories:
 

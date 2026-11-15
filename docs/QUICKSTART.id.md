@@ -48,7 +48,8 @@ curl -s 'http://127.0.0.1:8080/place/reverse?lat=-6.1754&lon=106.8272' | jq
 Fixture yang di-commit menguji kontrak Compose yang sama tanpa mengunduh rilis:
 
 ```bash
-DATA_DIR=./testdata \
+scripts/bootstrap.sh --fixtures
+DATA_DIR=./data \
 NUSAPETA_ROUTE_GRAPH=java-mini.graph \
 NUSAPETA_PLACE_INDEX=places-mini.idx \
 NUSAPETA_PLACE_MANIFEST=places-mini.idx.json \
@@ -56,6 +57,8 @@ NUSAPETA_ROUTE_IMAGE=nusapeta/route:local \
 NUSAPETA_PLACE_IMAGE=nusapeta/place:local \
 docker compose up -d --wait
 ```
+
+`--fixtures` memverifikasi `testdata/SHA256SUMS` sebelum menyalin file.
 
 Bangun image lokal dari repo engine:
 
